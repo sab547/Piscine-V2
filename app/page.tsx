@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Wrench, Lock, BarChart3, ArrowRight } from 'lucide-react';
+import { Wrench, Lock, BarChart3, ArrowRight, Users, Shield } from 'lucide-react';
 
 interface PortalCardProps {
   icon: React.ReactNode;
@@ -80,60 +80,60 @@ export default function Home() {
         </div>
 
         {/* Portal Cards Grid */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <PortalCard
-            icon={<Wrench className="w-8 h-8 text-primary" />}
+            icon={<Users className="w-8 h-8 text-blue-600" />}
+            title="Entreprise/Pisciniste"
+            description="Gestion de votre activité"
+            href="/login"
+            color="primary"
+            items={[
+              'Gérer vos piscines',
+              'Gérer vos techniciens',
+              'Gérer vos clients',
+              'Statistiques',
+            ]}
+          />
+
+          <PortalCard
+            icon={<Wrench className="w-8 h-8 text-green-600" />}
             title="Espace Technicien"
-            description="Gérez vos interventions et passages"
-            href="/"
+            description="Gestion des interventions"
+            href="/login"
             color="primary"
             items={[
               'Voir le planning',
-              'Documenter les interventions',
-              'Photos avant/après',
-              'Mesures automatisées',
+              'Enregistrer interventions',
+              'Photos et mesures',
+              'Générer rapports',
             ]}
           />
 
           <PortalCard
-            icon={<Lock className="w-8 h-8 text-accent" />}
+            icon={<Lock className="w-8 h-8 text-purple-600" />}
             title="Portail Propriétaire"
-            description="Suivi de votre piscine en temps réel"
-            href="/portail/token_001"
+            description="Suivi de votre piscine"
+            href="/portail"
             color="accent"
             items={[
               'État de votre piscine',
-              'Historique des passages',
+              'Historique passages',
               'Galerie photos',
-              'Devis personnalisés',
+              'Signer devis',
             ]}
           />
 
           <PortalCard
-            icon={<Wrench className="w-8 h-8 text-primary" />}
-            title="Espace Technicien"
-            description="Gestion des interventions et piscines"
-            href="/piscines"
-            color="primary"
-            items={[
-              'Liste de vos piscines',
-              'Interventions planifiées',
-              'Enregistrement mesures',
-              'Génération rapports',
-            ]}
-          />
-
-          <PortalCard
-            icon={<BarChart3 className="w-8 h-8 text-purple-600" />}
-            title="Tableau de bord Admin"
-            description="Vue d&apos;ensemble de votre activité"
+            icon={<Shield className="w-8 h-8 text-red-600" />}
+            title="Admin PoolTrack"
+            description="Gestion plateforme"
             href="/admin"
             color="admin"
             items={[
+              'Tous les clients',
               'Statistiques globales',
-              'Gestion des clients',
-              'Suivi des techniciens',
-              'Toutes les interventions',
+              'Gestion utilisateurs',
+              'Configuration',
             ]}
           />
         </div>

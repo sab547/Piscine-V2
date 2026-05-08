@@ -1,28 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
 
 export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
-
   const pathname = request.nextUrl.pathname;
 
-  // Exclude public routes from auth middleware
-  const publicRoutes = ['/api/auth', '/portail', '/tarifs', '/', '/login', '/piscines', '/planning', '/passage', '/rapports', '/anomalies', '/parametres'];
+  // Public routes (no auth needed)
+  const publicRoutes = ['/api/v1/auth', '/portail', '/tarifs', '/', '/login', '/admin'];
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
   if (isPublicRoute) {
+    return NextResponse.next();
+  }
+
+  // Protected routes - Check authentication
+  const response = NextResponse.next();
+  const token = request.headers.get('Authorization')?.replace('Bearer ', '') ||
+                request.cookies.get('auth-token')?.value;
+
+  if (!token) {
+    // Redirect to login if accessing protected routes without token
+    if (pathname.startsWith('/entreprise') || pathname.startsWith('/technicien')) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
     return response;
   }
 
-  // TODO: Implement auth check and tenantId injection
-  // For now, these are stubs
-  // const token = request.cookies.get('auth-token')?.value;
-  // const user = await verifyToken(token);
-  // const tenantId = user?.tenantId;
+  try {
+    const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
 
-  // Set tenantId header for API routes
-  // response.headers.set('x-tenant-id', tenantId);
+    // Check if user role matches the route
+    if (pathname.startsWith('/entreprise') && decoded.role !== 'pisciniste') {
+      return NextResponse.redirect(new URL('/technicien', request.url));
+    }
 
-  return response;
+    if (pathname.startsWith('/technicien') && !['technicien', 'pisciniste'].includes(decoded.role)) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    // Add tenant ID to header for API routes
+    if (pathname.startsWith('/api')) {
+      response.headers.set('x-tenant-id', decoded.tenantId);
+      response.headers.set('x-user-id', decoded.userId);
+      response.headers.set('x-user-role', decoded.role);
+    }
+
+    return response;
+  } catch (error) {
+    console.error('Token verification failed:', error);
+
+    if (pathname.startsWith('/api')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 }
 
 export const config = {
