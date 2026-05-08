@@ -5,11 +5,37 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Public routes (no auth needed)
-  const publicRoutes = ['/api/v1/auth', '/portail', '/tarifs', '/', '/login', '/admin'];
+  const publicRoutes = ['/api/v1/auth', '/portail', '/tarifs', '/', '/login'];
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
   if (isPublicRoute) {
     return NextResponse.next();
+  }
+
+  // Admin routes require special 'admin' role
+  if (pathname.startsWith('/admin')) {
+    const response = NextResponse.next();
+    const token = request.headers.get('Authorization')?.replace('Bearer ', '') ||
+                  request.cookies.get('auth-token')?.value;
+
+    if (!token) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+
+    try {
+      const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+
+      if (decoded.role !== 'admin') {
+        return NextResponse.redirect(new URL('/', request.url));
+      }
+
+      response.headers.set('x-user-id', decoded.userId);
+      response.headers.set('x-user-role', decoded.role);
+      return response;
+    } catch (error) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
   }
 
   // Protected routes - Check authentication
