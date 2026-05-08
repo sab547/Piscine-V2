@@ -80,7 +80,7 @@ export default function Home() {
         </div>
 
         {/* Portal Cards Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <PortalCard
             icon={<Users className="w-8 h-8 text-blue-600" />}
             title="Entreprise/Pisciniste"
@@ -99,7 +99,7 @@ export default function Home() {
             icon={<Wrench className="w-8 h-8 text-green-600" />}
             title="Espace Technicien"
             description="Gestion des interventions"
-            href="/login"
+            href="/technicien/acces"
             color="primary"
             items={[
               'Voir le planning',
@@ -120,20 +120,6 @@ export default function Home() {
               'Historique passages',
               'Galerie photos',
               'Signer devis',
-            ]}
-          />
-
-          <PortalCard
-            icon={<Shield className="w-8 h-8 text-red-600" />}
-            title="Admin PoolTrack"
-            description="Gestion plateforme"
-            href="/admin"
-            color="admin"
-            items={[
-              'Tous les clients',
-              'Statistiques globales',
-              'Gestion utilisateurs',
-              'Configuration',
             ]}
           />
         </div>
@@ -166,8 +152,13 @@ export default function Home() {
         </div>
 
         {/* Footer Info */}
-        <div className="text-center text-sm text-text-muted border-t border-border pt-6">
+        <div className="text-center text-sm text-text-muted border-t border-border pt-6 space-y-3">
           <p>Bienvenue sur <span className="font-bold text-text">PoolTrack</span> - La plateforme SaaS pour professionnels de la piscine</p>
+          <p className="text-xs">
+            <Link href="/admin" className="hover:text-text transition opacity-50 hover:opacity-100">
+              Admin
+            </Link>
+          </p>
         </div>
       </div>
     </main>
