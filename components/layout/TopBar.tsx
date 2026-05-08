@@ -1,64 +1,72 @@
 'use client';
 
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Droplets, Bell } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
-interface TopBarProps {
-  showBack?: boolean;
-  title?: string;
-  subtitle?: string;
-  prevHref?: string;
-  nextHref?: string;
-}
+const PAGE_TITLES: Record<string, string> = {
+  '/dashboard': '',
+  '/piscines': 'Mes piscines',
+  '/planning': 'Planning',
+  '/rapports': 'Rapports',
+  '/parametres': 'Paramètres',
+  '/anomalies': 'Anomalies',
+};
 
-export function TopBar({ showBack = false, title, subtitle, prevHref, nextHref }: TopBarProps) {
+const MAIN_PAGES = ['/dashboard', '/piscines', '/planning', '/rapports', '/parametres', '/anomalies'];
+
+export function TopBar() {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const isMainPage = MAIN_PAGES.includes(pathname);
+  const pageTitle = PAGE_TITLES[pathname] ?? '';
+  const isDashboard = pathname === '/dashboard' || pathname === '/';
 
   return (
-    <div className="sticky top-0 z-40 bg-white border-b border-border">
-      <div className="flex items-center justify-between px-4 py-3 safe-area">
-        {showBack ? (
+    <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-border">
+      <div className="flex items-center justify-between px-4 py-3 min-h-[56px]">
+        {/* Left: logo on main pages, back on sub-pages */}
+        {isDashboard ? (
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center">
+              <Droplets className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-lg font-bold text-primary font-display">PoolTrack</span>
+          </Link>
+        ) : isMainPage ? (
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center">
+              <Droplets className="w-5 h-5 text-white" />
+            </div>
+          </div>
+        ) : (
           <button
             onClick={() => router.back()}
-            className="p-2 -ml-2 hover:bg-surface rounded-lg transition-colors"
+            className="p-2 -ml-2 hover:bg-surface active:bg-surface rounded-xl transition-colors"
+            aria-label="Retour"
           >
             <ArrowLeft className="w-6 h-6 text-primary" />
           </button>
-        ) : (
-          <div />
         )}
 
-        <div className="flex-1 flex flex-col items-center">
-          {title && (
-            <h1 className="text-lg font-semibold text-text font-display">
-              {title}
-            </h1>
-          )}
-          {subtitle && (
-            <p className="text-xs text-text-muted font-body mt-0.5">
-              {subtitle}
-            </p>
+        {/* Center: title for non-dashboard pages */}
+        <div className="flex-1 flex justify-center">
+          {pageTitle && (
+            <h1 className="text-base font-bold text-text font-display">{pageTitle}</h1>
           )}
         </div>
 
-        {(prevHref || nextHref) ? (
-          <div className="flex gap-1">
-            {prevHref ? (
-              <Link href={prevHref} className="p-2 hover:bg-surface rounded-lg transition-colors">
-                <ArrowLeft className="w-5 h-5 text-primary" />
-              </Link>
-            ) : (
-              <div className="p-2" />
-            )}
-            {nextHref ? (
-              <Link href={nextHref} className="p-2 hover:bg-surface rounded-lg transition-colors">
-                <ArrowRight className="w-5 h-5 text-primary" />
-              </Link>
-            ) : (
-              <div className="p-2" />
-            )}
-          </div>
+        {/* Right: notification bell on dashboard */}
+        {isDashboard ? (
+          <Link
+            href="/anomalies"
+            className="relative p-2 -mr-2 hover:bg-surface active:bg-surface rounded-xl transition-colors"
+            aria-label="Anomalies"
+          >
+            <Bell className="w-5 h-5 text-text-muted" />
+            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-danger rounded-full border-2 border-white" />
+          </Link>
         ) : (
           <div className="w-10" />
         )}
