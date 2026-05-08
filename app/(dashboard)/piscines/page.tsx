@@ -3,7 +3,7 @@
 import { Search, Droplets, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { mockPiscines, mockNormes } from '@/lib/mock-data';
+import { mockPiscines } from '@/lib/mock-data';
 
 export default function PiscinesPage() {
   const [searchTerm, setSearchTerm] = useState('');
