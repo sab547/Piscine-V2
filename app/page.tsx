@@ -110,6 +110,20 @@ export default function Home() {
           />
 
           <PortalCard
+            icon={<Wrench className="w-8 h-8 text-primary" />}
+            title="Espace Technicien"
+            description="Gestion des interventions et piscines"
+            href="/piscines"
+            color="primary"
+            items={[
+              'Liste de vos piscines',
+              'Interventions planifiées',
+              'Enregistrement mesures',
+              'Génération rapports',
+            ]}
+          />
+
+          <PortalCard
             icon={<BarChart3 className="w-8 h-8 text-purple-600" />}
             title="Tableau de bord Admin"
             description="Vue d&apos;ensemble de votre activité"

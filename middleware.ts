@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Exclude public routes from auth middleware
-  const publicRoutes = ['/api/auth', '/portail', '/tarifs', '/', '/login'];
+  const publicRoutes = ['/api/auth', '/portail', '/tarifs', '/', '/login', '/piscines', '/planning', '/passage', '/rapports', '/anomalies', '/parametres'];
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
   if (isPublicRoute) {
