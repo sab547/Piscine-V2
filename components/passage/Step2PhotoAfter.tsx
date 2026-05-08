@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { PhotoUpload } from './PhotoUpload';
 
 interface Step2PhotoAfterProps {
@@ -28,9 +29,11 @@ export function Step2PhotoAfter({
           </p>
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-lg overflow-hidden border border-border">
-              <img
+              <Image
                 src={beforePreview}
                 alt="Avant"
+                width={200}
+                height={200}
                 className="w-full aspect-square object-cover"
               />
               <p className="bg-surface text-xs font-semibold text-text text-center py-2">
@@ -39,9 +42,11 @@ export function Step2PhotoAfter({
             </div>
             {afterPreview && (
               <div className="rounded-lg overflow-hidden border border-border">
-                <img
+                <Image
                   src={afterPreview}
                   alt="Après"
+                  width={200}
+                  height={200}
                   className="w-full aspect-square object-cover"
                 />
                 <p className="bg-success/10 text-xs font-semibold text-success text-center py-2">

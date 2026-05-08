@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 interface PreviewData {
   photoBefore?: string;
   photoAfter?: string;
@@ -55,9 +57,11 @@ export function Step4Preview({
           <div className="grid grid-cols-2 gap-3">
             {photoBefore && (
               <div className="rounded-lg overflow-hidden border border-border">
-                <img
+                <Image
                   src={photoBefore}
                   alt="Avant"
+                  width={200}
+                  height={200}
                   className="w-full aspect-square object-cover"
                 />
                 <p className="bg-white text-xs font-semibold text-text text-center py-2">
@@ -67,9 +71,11 @@ export function Step4Preview({
             )}
             {photoAfter && (
               <div className="rounded-lg overflow-hidden border border-border">
-                <img
+                <Image
                   src={photoAfter}
                   alt="Après"
+                  width={200}
+                  height={200}
                   className="w-full aspect-square object-cover"
                 />
                 <p className="bg-success/10 text-xs font-semibold text-success text-center py-2">

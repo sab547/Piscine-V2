@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Camera, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 
@@ -89,9 +90,11 @@ export function PhotoUpload({
       ) : (
         <div className="relative bg-surface rounded-lg overflow-hidden">
           <div className="relative w-full aspect-square">
-            <img
+            <Image
               src={preview}
               alt={label}
+              width={400}
+              height={400}
               className="w-full h-full object-cover"
             />
           </div>
