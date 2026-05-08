@@ -1,69 +1,159 @@
 import Link from 'next/link';
-import { Droplets, Lock, Users, Settings, CreditCard } from 'lucide-react';
+import { Wrench, Lock, BarChart3, ArrowRight } from 'lucide-react';
+
+interface PortalCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  href: string;
+  color: 'primary' | 'accent' | 'admin';
+  items: string[];
+}
+
+function PortalCard({ icon, title, description, href, color, items }: PortalCardProps) {
+  const colorMap = {
+    primary: 'border-primary bg-primary/5',
+    accent: 'border-accent bg-accent/5',
+    admin: 'border-purple-500 bg-purple-500/5',
+  };
+
+  const colorText = {
+    primary: 'text-primary',
+    accent: 'text-accent',
+    admin: 'text-purple-600',
+  };
+
+  const buttonColor = {
+    primary: 'btn-primary',
+    accent: 'bg-accent hover:bg-accent/90 text-white',
+    admin: 'bg-purple-600 hover:bg-purple-700 text-white',
+  };
+
+  return (
+    <div
+      className={`card border-l-4 ${colorMap[color]} space-y-4 hover:shadow-lg transition-all`}
+    >
+      <div className="flex items-start gap-3">
+        <div className={`p-3 rounded-lg bg-white border border-border`}>{icon}</div>
+        <div className="flex-1">
+          <h2 className={`text-xl font-bold font-display ${colorText[color]}`}>{title}</h2>
+          <p className="text-sm text-text-muted">{description}</p>
+        </div>
+      </div>
+
+      <ul className="space-y-2">
+        {items.map((item, i) => (
+          <li key={i} className="flex items-center gap-2 text-sm text-text-muted">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      <Link
+        href={href}
+        className={`flex items-center justify-center gap-2 font-semibold py-2 px-4 rounded-lg transition-colors ${
+          color === 'primary'
+            ? buttonColor.primary
+            : color === 'accent'
+              ? buttonColor.accent
+              : buttonColor.admin
+        }`}
+      >
+        Accéder
+        <ArrowRight className="w-4 h-4" />
+      </Link>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-primary to-primary-dark px-4 py-12">
-      <div className="max-w-md mx-auto space-y-8">
+    <main className="min-h-screen bg-white px-4 py-12">
+      <div className="max-w-6xl mx-auto space-y-12">
+        {/* Header */}
         <div className="text-center space-y-3">
-          <h1 className="text-5xl font-bold text-white font-display">
-            PoolTrack
-          </h1>
-          <p className="text-lg text-white/80 font-body">
-            Gestion d&apos;entretien de piscine
+          <h1 className="text-5xl font-bold text-primary font-display">PoolTrack</h1>
+          <p className="text-xl text-text-muted font-body">
+            Gestion d&apos;entretien de piscine - Choisissez votre espace
           </p>
         </div>
 
-        <div className="bg-white/10 backdrop-blur border border-white/20 rounded-lg p-6 space-y-4">
-          <h2 className="text-white font-semibold text-center">
-            Sélectionner votre espace
-          </h2>
-
-          <Link
-            href="/passage/m1"
-            className="flex items-center gap-3 bg-white hover:bg-white/90 text-primary font-semibold py-3 px-4 rounded-lg transition-colors"
-          >
-            <Droplets className="w-5 h-5" />
-            Intervention (Technicien)
-          </Link>
-
-          <Link
+        {/* Portal Cards Grid */}
+        <div className="grid md:grid-cols-3 gap-6">
+          <PortalCard
+            icon={<Wrench className="w-8 h-8 text-primary" />}
+            title="Espace Technicien"
+            description="Gérez vos interventions et passages"
             href="/"
-            className="flex items-center gap-3 bg-primary-dark hover:bg-primary text-white font-semibold py-3 px-4 rounded-lg transition-colors"
-          >
-            <Users className="w-5 h-5" />
-            Dashboard
-          </Link>
+            color="primary"
+            items={[
+              'Voir le planning',
+              'Documenter les interventions',
+              'Photos avant/après',
+              'Mesures automatisées',
+            ]}
+          />
 
-          <Link
+          <PortalCard
+            icon={<Lock className="w-8 h-8 text-accent" />}
+            title="Portail Propriétaire"
+            description="Suivi de votre piscine en temps réel"
             href="/portail/token_001"
-            className="flex items-center gap-3 bg-accent hover:bg-accent/90 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+            color="accent"
+            items={[
+              'État de votre piscine',
+              'Historique des passages',
+              'Galerie photos',
+              'Devis personnalisés',
+            ]}
+          />
+
+          <PortalCard
+            icon={<BarChart3 className="w-8 h-8 text-purple-600" />}
+            title="Tableau de bord Admin"
+            description="Vue d&apos;ensemble de votre activité"
+            href="/admin"
+            color="admin"
+            items={[
+              'Statistiques globales',
+              'Gestion des clients',
+              'Suivi des techniciens',
+              'Toutes les interventions',
+            ]}
+          />
+        </div>
+
+        {/* Quick Links */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <Link
+            href="/tarifs"
+            className="card border-l-4 border-warning hover:shadow-lg transition-all group"
           >
-            <Lock className="w-5 h-5" />
-            Portail Propriétaire
+            <h3 className="font-bold text-text font-display mb-2">Nos tarifs</h3>
+            <p className="text-sm text-text-muted mb-3">
+              Découvrez nos plans et tarification
+            </p>
+            <span className="inline-flex items-center gap-1 text-warning font-semibold group-hover:gap-2 transition-all">
+              Voir les plans <ArrowRight className="w-4 h-4" />
+            </span>
           </Link>
 
           <Link
             href="/parametres"
-            className="flex items-center gap-3 bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+            className="card border-l-4 border-primary hover:shadow-lg transition-all group"
           >
-            <Settings className="w-5 h-5" />
-            Paramètres
-          </Link>
-
-          <Link
-            href="/tarifs"
-            className="flex items-center gap-3 bg-success hover:bg-success/90 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
-          >
-            <CreditCard className="w-5 h-5" />
-            Tarifs & Plans
+            <h3 className="font-bold text-text font-display mb-2">Paramètres</h3>
+            <p className="text-sm text-text-muted mb-3">Gérez vos préférences utilisateur</p>
+            <span className="inline-flex items-center gap-1 text-primary font-semibold group-hover:gap-2 transition-all">
+              Accéder <ArrowRight className="w-4 h-4" />
+            </span>
           </Link>
         </div>
 
-        <div className="bg-white/10 backdrop-blur border border-white/20 rounded-lg p-4 text-center space-y-2">
-          <p className="text-sm text-white/80 font-body">
-            Vous pouvez accéder à toutes les pages de l&apos;application depuis ce menu.
-          </p>
+        {/* Footer Info */}
+        <div className="text-center text-sm text-text-muted border-t border-border pt-6">
+          <p>Bienvenue sur <span className="font-bold text-text">PoolTrack</span> - La plateforme SaaS pour professionnels de la piscine</p>
         </div>
       </div>
     </main>

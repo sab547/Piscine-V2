@@ -1,15 +1,18 @@
 'use client';
 
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 interface TopBarProps {
   showBack?: boolean;
   title?: string;
   subtitle?: string;
+  prevHref?: string;
+  nextHref?: string;
 }
 
-export function TopBar({ showBack = false, title, subtitle }: TopBarProps) {
+export function TopBar({ showBack = false, title, subtitle, prevHref, nextHref }: TopBarProps) {
   const router = useRouter();
 
   return (
@@ -39,7 +42,26 @@ export function TopBar({ showBack = false, title, subtitle }: TopBarProps) {
           )}
         </div>
 
-        <div className="w-10" />
+        {(prevHref || nextHref) ? (
+          <div className="flex gap-1">
+            {prevHref ? (
+              <Link href={prevHref} className="p-2 hover:bg-surface rounded-lg transition-colors">
+                <ArrowLeft className="w-5 h-5 text-primary" />
+              </Link>
+            ) : (
+              <div className="p-2" />
+            )}
+            {nextHref ? (
+              <Link href={nextHref} className="p-2 hover:bg-surface rounded-lg transition-colors">
+                <ArrowRight className="w-5 h-5 text-primary" />
+              </Link>
+            ) : (
+              <div className="p-2" />
+            )}
+          </div>
+        ) : (
+          <div className="w-10" />
+        )}
       </div>
     </div>
   );

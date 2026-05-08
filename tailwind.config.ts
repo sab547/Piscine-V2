@@ -9,15 +9,15 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#0B5EA8',
-          dark: '#083F74',
+          DEFAULT: '#00B4D8',
+          dark: '#0090AD',
         },
-        accent: '#00B4D8',
+        accent: '#0B5EA8',
         success: '#10B981',
         warning: '#F59E0B',
         danger: '#EF4444',
-        surface: '#F8FAFC',
-        border: '#E2E8F0',
+        surface: '#F0FAFD',
+        border: '#BAE6F2',
         text: {
           DEFAULT: '#0F172A',
           muted: '#64748B',
