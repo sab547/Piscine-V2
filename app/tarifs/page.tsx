@@ -123,9 +123,6 @@ const faqs = [
 ];
 
 export default function TarifsPage() {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>(
-    'monthly'
-  );
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   return (

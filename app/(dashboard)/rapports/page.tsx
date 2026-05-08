@@ -1,7 +1,7 @@
 'use client';
 
 import { Download, Calendar, Droplets, CheckCircle2 } from 'lucide-react';
-import { mockMissions, mockPiscines } from '@/lib/mock-data';
+import { mockMissions } from '@/lib/mock-data';
 
 export default function RapportsPage() {
   const reports = mockMissions

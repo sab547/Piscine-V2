@@ -2,11 +2,8 @@
 
 import {
   Download,
-  Droplets,
   Calendar,
   User,
-  AlertCircle,
-  CheckCircle2,
   Lock,
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -14,7 +11,6 @@ import { fr } from 'date-fns/locale';
 import {
   mockPortalPassages,
   mockPortalQuotes,
-  mockProprietaire,
   mockPiscines,
   getWaterStatus,
   getWaterStatusColor,
@@ -27,7 +23,7 @@ interface PortalPageProps {
   };
 }
 
-export default function PortalPage({ params }: PortalPageProps) {
+export default function PortalPage({ params: _params }: PortalPageProps) {
   // In production, verify token and fetch actual data
   // For now, use mock data for the first pool
   const piscine = mockPiscines[0];
@@ -100,7 +96,7 @@ export default function PortalPage({ params }: PortalPageProps) {
           </h2>
 
           <div className="space-y-2">
-            {mockPortalPassages.map((passage, index) => (
+            {mockPortalPassages.map((passage) => (
               <div
                 key={passage.id}
                 className="bg-surface border border-border rounded-lg p-4 space-y-3"
@@ -159,7 +155,7 @@ export default function PortalPage({ params }: PortalPageProps) {
           </h2>
 
           <div className="space-y-6">
-            {mockPortalPassages.slice(0, 3).map((passage, index) => (
+            {mockPortalPassages.slice(0, 3).map((passage) => (
               <div key={passage.id} className="space-y-2">
                 <p className="text-xs font-semibold text-text-muted">
                   {format(passage.date, 'd MMMM', { locale: fr })}

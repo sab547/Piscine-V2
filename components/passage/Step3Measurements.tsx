@@ -2,7 +2,6 @@
 
 import { mockNormes } from '@/lib/mock-data';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import { useState } from 'react';
 
 interface MeasurementData {
   ph: number | '';

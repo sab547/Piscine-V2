@@ -8,7 +8,6 @@ import { Step3Measurements } from './Step3Measurements';
 import { Step4Preview } from './Step4Preview';
 import { Step5Confirmation } from './Step5Confirmation';
 import { ProgressBar } from './ProgressBar';
-import { mockNormes } from '@/lib/mock-data';
 
 interface PassageFlowProps {
   mission: {

@@ -1,8 +1,7 @@
 'use client';
 
-import { Camera, Upload, X } from 'lucide-react';
+import { Camera, X } from 'lucide-react';
 import { useRef, useState } from 'react';
-import Image from 'next/image';
 
 interface PhotoUploadProps {
   onPhotoSelect: (file: File) => void;

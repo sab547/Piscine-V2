@@ -75,6 +75,7 @@ export const mockMissions = [
     adresse: '12 Bd de la Mer, Cannes',
     statut: StatutPassage.EN_COURS,
     piscineId: 'pool_001',
+    datePrevu: new Date(),
   },
   {
     id: 'm2',
@@ -83,6 +84,7 @@ export const mockMissions = [
     adresse: '45 Av. des Fleurs, Antibes',
     statut: StatutPassage.PLANIFIE,
     piscineId: 'pool_002',
+    datePrevu: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
   },
   {
     id: 'm3',
@@ -91,6 +93,7 @@ export const mockMissions = [
     adresse: '8 Rte de la Corniche, Nice',
     statut: StatutPassage.PLANIFIE,
     piscineId: 'pool_003',
+    datePrevu: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
   },
 ];
 

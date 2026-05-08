@@ -15,7 +15,7 @@ export default function PlanningPage() {
   const getMissionsForDay = (day: Date) => {
     return mockMissions.filter(
       (m) =>
-        format(today, 'yyyy-MM-dd') ===
+        format(m.datePrevu, 'yyyy-MM-dd') ===
         format(day, 'yyyy-MM-dd')
     );
   };
