@@ -29,6 +29,14 @@ export enum Gravite {
   FAIBLE = 'FAIBLE',
 }
 
+export enum StatutDevis {
+  BROUILLON = 'BROUILLON',
+  ENVOYE = 'ENVOYE',
+  ACCEPTE = 'ACCEPTE',
+  REFUSE = 'REFUSE',
+  EXPIRE = 'EXPIRE',
+}
+
 export enum TypePiscine {
   PRIVEE = 'PRIVEE',
   COPROPRIETE = 'COPROPRIETE',
@@ -43,6 +51,7 @@ export interface Tenant {
   logo?: string;
   email: string;
   telephone?: string;
+  supportEmail?: string;
   plan: Plan;
   stripeId?: string;
   actif: boolean;
@@ -83,6 +92,8 @@ export interface Piscine {
   volume?: number;
   equipements: string[];
   note?: string;
+  latitude?: number;
+  longitude?: number;
   actif: boolean;
   createdAt: Date;
 }
@@ -103,6 +114,9 @@ export interface Passage {
   note?: string;
   pdfUrl?: string;
   emailEnvoye: boolean;
+  magicLinkToken?: string;
+  tokenExpiresAt?: Date;
+  clientAccessAt?: Date;
   createdAt: Date;
 }
 
@@ -122,6 +136,61 @@ export interface Anomalie {
   traite: boolean;
   traiteLe?: Date;
   devisId?: string;
+  createdAt: Date;
+}
+
+export interface Devis {
+  id: string;
+  tenantId: string;
+  proprietaireEmail: string;
+  numero: string;
+  statut: StatutDevis;
+  montantHT: number;
+  montantTTC: number;
+  tva: number;
+  description: string;
+  validJusqu: Date;
+  signatureDataUrl?: string;
+  signeA?: Date;
+  signeNom?: string;
+  pdfUrl?: string;
+  createdAt: Date;
+}
+
+export interface ApiKey {
+  id: string;
+  tenantId: string;
+  name: string;
+  keyHash: string;
+  expiresAt: Date;
+  lastUsedAt?: Date;
+  createdAt: Date;
+}
+
+export interface ChatMessage {
+  id: string;
+  sessionId: string;
+  role: 'user' | 'assistant';
+  content: string;
+  createdAt: Date;
+}
+
+export interface ChatSession {
+  id: string;
+  tenantId: string;
+  clientId?: string;
+  messages: ChatMessage[];
+  createdAt: Date;
+}
+
+export interface RecurringReminder {
+  id: string;
+  tenantId: string;
+  piscineId: string;
+  frequencyDays: number;
+  lastSentAt?: Date;
+  nextDueAt: Date;
+  enabled: boolean;
   createdAt: Date;
 }
 

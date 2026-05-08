@@ -60,6 +60,7 @@ model Tenant {
   logo          String?
   email         String    @unique
   telephone     String?
+  supportEmail  String?   // Email support client
   plan          Plan      @default(STANDARD)
   stripeId      String?   @unique
   actif         Boolean   @default(false)
@@ -68,6 +69,9 @@ model Tenant {
   piscines      Piscine[]
   proprietaires Proprietaire[]
   passages      Passage[]
+  apiKeys       ApiKey[]
+  chatSessions  ChatSession[]
+  reminders     RecurringReminder[]
 }
 
 model User {
@@ -114,8 +118,11 @@ model Piscine {
   volume         Int?
   equipements    String[]
   note           String?
+  latitude       Float?       // For map display
+  longitude      Float?       // For map display
   actif          Boolean      @default(true)
   passages       Passage[]
+  reminders      RecurringReminder[]
   createdAt      DateTime     @default(now())
 
   @@index([tenantId])
@@ -142,6 +149,12 @@ model Passage {
   anomalies    Anomalie[]
   pdfUrl       String?
   emailEnvoye  Boolean       @default(false)
+
+  // Magic link for client portal access
+  magicLinkToken String?      @unique
+  tokenExpiresAt DateTime?
+  clientAccessAt DateTime?    // When client first accessed via magic link
+
   createdAt    DateTime      @default(now())
 
   @@index([tenantId, datePrevu])
@@ -169,20 +182,82 @@ model Anomalie {
   traiteLe    DateTime?
   devisId     String?
   createdAt   DateTime @default(now())
+
+  @@index([passageId])
 }
 
 model Devis {
-  id         String      @id @default(cuid())
-  tenantId   String
-  numero     String
-  statut     StatutDevis @default(BROUILLON)
-  montantHT  Decimal     @db.Decimal(10, 2)
-  montantTTC Decimal     @db.Decimal(10, 2)
-  validJusqu DateTime
-  signeA     DateTime?
-  signeNom   String?
-  pdfUrl     String?
-  createdAt  DateTime    @default(now())
+  id              String      @id @default(cuid())
+  tenantId        String
+  tenant          Tenant      @relation(fields: [tenantId], references: [id])
+  proprietaireEmail String
+  numero          String      @unique
+  statut          StatutDevis @default(BROUILLON)
+  montantHT       Decimal     @db.Decimal(10, 2)
+  montantTTC      Decimal     @db.Decimal(10, 2)
+  tva             Int         @default(20)
+  description     String      @default("")
+  validJusqu      DateTime
+
+  signatureDataUrl String?
+  signeA          DateTime?
+  signeNom        String?
+
+  pdfUrl          String?
+  createdAt       DateTime    @default(now())
 
   @@index([tenantId, statut])
+}
+
+// ─── NEW MODELS FOR FEATURES ──────────────────────────────────
+
+model ApiKey {
+  id           String   @id @default(cuid())
+  tenantId     String
+  tenant       Tenant   @relation(fields: [tenantId], references: [id])
+  name         String
+  keyHash      String   @unique
+  expiresAt    DateTime
+  lastUsedAt   DateTime?
+  createdAt    DateTime @default(now())
+
+  @@index([tenantId])
+}
+
+model ChatSession {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  clientId  String?
+  messages  ChatMessage[]
+  createdAt DateTime @default(now())
+
+  @@index([tenantId])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  sessionId String
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+}
+
+model RecurringReminder {
+  id             String   @id @default(cuid())
+  tenantId       String
+  tenant         Tenant   @relation(fields: [tenantId], references: [id])
+  piscineId      String
+  piscine        Piscine  @relation(fields: [piscineId], references: [id])
+  frequencyDays  Int
+  lastSentAt     DateTime?
+  nextDueAt      DateTime
+  enabled        Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([piscineId])
 }
