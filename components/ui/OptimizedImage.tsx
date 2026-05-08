@@ -28,6 +28,7 @@ export function OptimizedImage({
   if (isDataUrl || isRelativePath) {
     return (
       <div className={containerClassName}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           alt={alt}
