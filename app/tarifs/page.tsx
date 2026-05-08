@@ -1,7 +1,8 @@
 'use client';
 
-import { CheckCircle2, Star, ArrowRight, HelpCircle } from 'lucide-react';
+import { CheckCircle2, Minus, Star, ArrowRight, HelpCircle } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface Plan {
   id: string;
@@ -124,26 +125,33 @@ const faqs = [
 
 export default function TarifsPage() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const router = useRouter();
+
+  const startTrial = (planId: string) => {
+    router.push(`/login?plan=${planId}`);
+  };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-mist">
       {/* Header */}
-      <div className="bg-gradient-to-br from-primary to-primary-dark text-white px-4 py-12 space-y-6">
-        <div className="max-w-2xl mx-auto text-center space-y-3">
-          <h1 className="text-4xl font-bold font-display">Tarifs simples</h1>
-          <p className="text-lg text-white/80 font-body">
+      <div className="relative overflow-hidden bg-gradient-ocean text-white px-4 py-16 space-y-6">
+        <span aria-hidden className="shine-overlay" />
+        <div className="relative max-w-2xl mx-auto text-center space-y-3">
+          <p className="eyebrow !text-aqua-200">Tarification</p>
+          <h1 className="display-1 !text-white">Des tarifs limpides</h1>
+          <p className="text-lg text-white/85 font-body">
             Des plans adaptés à toutes les tailles de piscinerie
           </p>
-          <p className="text-sm text-white/60">
-            HT • Facturation mensuelle • Sans engagement
+          <p className="text-sm text-white/65">
+            HT · Facturation mensuelle · Sans engagement
           </p>
         </div>
 
         {/* Free Trial Banner */}
-        <div className="bg-white/20 backdrop-blur border border-white/30 rounded-lg p-4 text-center max-w-md mx-auto">
-          <p className="font-semibold mb-1">✨ Essai gratuit 14 jours</p>
-          <p className="text-sm text-white/80">
-            Sans carte bancaire. Accès complet à toutes les fonctionnalités.
+        <div className="relative bg-white/15 backdrop-blur border border-white/25 rounded-2xl p-5 text-center max-w-md mx-auto">
+          <p className="font-semibold mb-1 text-white">✨ Essai gratuit 14 jours</p>
+          <p className="text-sm text-white/85">
+            Sans carte bancaire · Accès complet à toutes les fonctionnalités.
           </p>
         </div>
       </div>
@@ -240,11 +248,10 @@ export default function TarifsPage() {
 
                 {/* CTA Button */}
                 <button
-                  className={`w-full font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 ${
-                    plan.recommended
-                      ? 'bg-primary hover:bg-primary-dark text-white'
-                      : 'bg-surface hover:bg-border border border-border text-text'
-                  }`}
+                  type="button"
+                  onClick={() => startTrial(plan.id)}
+                  data-testid={`plan-cta-${plan.id}`}
+                  className={`w-full ${plan.recommended ? 'btn-primary' : 'btn-outline'}`}
                 >
                   Démarrer l&apos;essai gratuit
                   <ArrowRight className="w-4 h-4" />
@@ -283,28 +290,42 @@ export default function TarifsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {[
-                  'Passages documentés',
-                  'Photos avant/après',
-                  'Mesures pH & Chlore',
-                  'Emails automatiques',
-                  'Gestion anomalies',
-                  'Devis automatisés',
-                  'Rapports personnalisés',
-                  'Portail brandé',
-                  'API access',
-                  'Support 24/7',
-                ].map((feature, i) => (
+                {(
+                  [
+                    { name: 'Passages documentés', s: true, p: true, m: true },
+                    { name: 'Photos avant/après', s: true, p: true, m: true },
+                    { name: 'Mesures pH & Chlore', s: true, p: true, m: true },
+                    { name: 'Emails automatiques', s: true, p: true, m: true },
+                    { name: 'Gestion anomalies', s: false, p: true, m: true },
+                    { name: 'Devis automatisés', s: false, p: true, m: true },
+                    { name: 'Rapports personnalisés', s: false, p: true, m: true },
+                    { name: 'Portail brandé', s: false, p: false, m: true },
+                    { name: 'API access', s: false, p: false, m: true },
+                    { name: 'Support 24/7', s: false, p: false, m: true },
+                  ] as { name: string; s: boolean; p: boolean; m: boolean }[]
+                ).map((row, i) => (
                   <tr key={i} className="hover:bg-surface transition-colors">
-                    <td className="px-4 py-3 text-text">{feature}</td>
+                    <td className="px-4 py-3 text-text">{row.name}</td>
                     <td className="text-center px-4 py-3">
-                      <CheckCircle2 className="w-5 h-5 text-success mx-auto" />
+                      {row.s ? (
+                        <CheckCircle2 className="w-5 h-5 text-success mx-auto" />
+                      ) : (
+                        <Minus className="w-5 h-5 text-text-muted mx-auto" />
+                      )}
                     </td>
                     <td className="text-center px-4 py-3">
-                      <CheckCircle2 className="w-5 h-5 text-success mx-auto" />
+                      {row.p ? (
+                        <CheckCircle2 className="w-5 h-5 text-success mx-auto" />
+                      ) : (
+                        <Minus className="w-5 h-5 text-text-muted mx-auto" />
+                      )}
                     </td>
                     <td className="text-center px-4 py-3">
-                      <CheckCircle2 className="w-5 h-5 text-success mx-auto" />
+                      {row.m ? (
+                        <CheckCircle2 className="w-5 h-5 text-success mx-auto" />
+                      ) : (
+                        <Minus className="w-5 h-5 text-text-muted mx-auto" />
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -355,15 +376,21 @@ export default function TarifsPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="bg-primary text-white rounded-lg p-8 text-center space-y-4">
-          <h2 className="text-3xl font-bold font-display">
-            Prêt à transformer votre activité?
+        <section className="relative overflow-hidden bg-gradient-ocean text-white rounded-2xl p-10 text-center space-y-5">
+          <span aria-hidden className="shine-overlay" />
+          <h2 className="display-2 !text-white relative">
+            Prêt à transformer votre activité ?
           </h2>
-          <p className="text-lg text-white/80 max-w-2xl mx-auto">
+          <p className="relative text-lg text-white/85 max-w-2xl mx-auto">
             Rejoignez les piscineries qui ont choisi PoolTrack pour augmenter leur
             professionnalisme et conserver leurs clients.
           </p>
-          <button className="bg-white hover:bg-white/90 text-primary font-bold py-3 px-8 rounded-lg transition-colors inline-flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => startTrial('pro')}
+            data-testid="final-cta"
+            className="relative btn bg-white text-primary hover:bg-white/95 hover:shadow-ocean-lg !min-h-[56px]"
+          >
             Démarrer l&apos;essai gratuit
             <ArrowRight className="w-5 h-5" />
           </button>
@@ -371,12 +398,16 @@ export default function TarifsPage() {
 
         {/* Contact */}
         <section className="text-center space-y-2 pb-12">
-          <p className="text-text-muted">
-            Besoin d&apos;aide pour choisir le bon plan?
+          <p className="text-text-secondary">
+            Besoin d&apos;aide pour choisir le bon plan ?
           </p>
-          <button className="text-primary hover:text-primary-dark font-semibold">
-            Contactez notre équipe →
-          </button>
+          <a
+            href="mailto:contact@pooltrack.com"
+            data-testid="contact-link"
+            className="inline-flex items-center gap-1 font-semibold text-primary hover:text-aqua-600 transition-colors"
+          >
+            Contactez notre équipe <ArrowRight className="w-4 h-4" />
+          </a>
         </section>
       </div>
     </div>

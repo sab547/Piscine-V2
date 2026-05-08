@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, AlertCircle } from 'lucide-react';
+import { Mail, Lock, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react';
 
 export default function PortailAccessPage() {
   const router = useRouter();
@@ -30,11 +30,9 @@ export default function PortailAccessPage() {
         throw new Error(data.error || 'Email non reconnu');
       }
 
-      setSuccess('Lien magique envoyé! Consultez votre email pour accéder à votre espace.');
+      setSuccess('Lien magique envoyé ! Consultez votre boîte mail pour accéder à votre espace.');
       setEmail('');
-      
-      // In production, user would click link in email
-      // For demo, redirect after 2 seconds to dashboard
+
       setTimeout(() => {
         router.push('/portail/dashboard');
       }, 2000);
@@ -46,74 +44,95 @@ export default function PortailAccessPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-100 flex items-center justify-center px-4">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="bg-blue-100 p-4 rounded-full">
-              <Lock className="w-8 h-8 text-blue-600" />
+    <main className="relative min-h-screen overflow-hidden bg-aqua-aurora flex items-center justify-center px-4 py-12">
+      <div aria-hidden className="pointer-events-none absolute -top-40 -right-32 w-[36rem] h-[36rem] rounded-full bg-aqua-200/40 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-40 -left-32 w-[32rem] h-[32rem] rounded-full bg-lagoon-light/40 blur-3xl" />
+
+      <Link
+        href="/"
+        data-testid="back-home"
+        className="absolute top-6 left-6 inline-flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Accueil
+      </Link>
+
+      <div className="relative w-full max-w-md card-glass !p-8 space-y-7">
+        <div className="text-center space-y-4">
+          <div className="relative inline-flex items-center justify-center">
+            <div aria-hidden className="absolute -inset-3 rounded-full bg-gradient-lagoon opacity-25 blur-xl" />
+            <div className="relative w-14 h-14 rounded-2xl bg-gradient-ocean text-white inline-flex items-center justify-center shadow-ocean-lg">
+              <Lock className="w-7 h-7" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-blue-600 mb-2">Portail Propriétaire</h1>
-          <p className="text-gray-600">Accédez à votre espace client</p>
+
+          <div>
+            <p className="eyebrow">Propriétaire</p>
+            <h1 className="text-3xl font-display font-bold tracking-tight mt-1">
+              <span className="bg-gradient-to-r from-abyss via-primary to-aqua-500 bg-clip-text text-transparent">Portail Client</span>
+            </h1>
+            <p className="mt-1 text-sm text-text-secondary">Accédez à votre espace en un clic</p>
+          </div>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm flex items-start gap-2">
-            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2 p-3.5 rounded-md bg-danger-light text-danger text-sm">
+            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">
-            ✓ {success}
+          <div className="flex items-start gap-2 p-3.5 rounded-md bg-success-light text-success text-sm">
+            <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
+            <span>{success}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-              Adresse Email
+            <label htmlFor="email" className="block text-xs font-bold tracking-wider uppercase text-text-secondary mb-1.5">
+              Adresse email
             </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="votre@email.com"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              disabled={loading}
-            />
+            <div className="input-wrap">
+              <Mail className="input-icon w-5 h-5" />
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="vous@email.com"
+                className="input-base"
+                required
+                disabled={loading}
+                data-testid="portail-email"
+              />
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2"
+            data-testid="portail-submit"
+            className="btn-aqua w-full"
           >
             <Mail className="w-4 h-4" />
-            {loading ? 'Envoi en cours...' : 'Envoyer lien de connexion'}
+            {loading ? 'Envoi en cours…' : 'Envoyer le lien de connexion'}
           </button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-center text-sm text-gray-600 mb-4">
-            Vous recevrez un lien de connexion sécurisé par email
+        <div className="pt-5 border-t border-white/60 space-y-3 text-center">
+          <p className="text-sm text-text-secondary">
+            Vous recevrez un lien de connexion sécurisé par email.
           </p>
-          <div className="text-center">
-            <p className="text-xs text-gray-500 mb-3">Pour les tests, utilisez:</p>
-            <p className="text-xs font-mono text-gray-600">proprietaire@example.com</p>
+          <div className="text-xs">
+            <p className="text-text-muted mb-1">Démo :</p>
+            <code className="font-mono text-xs px-2 py-1 rounded bg-aqua-50 text-aqua-700">
+              proprietaire@example.com
+            </code>
           </div>
         </div>
-
-        <div className="mt-6 text-center">
-          <Link href="/" className="text-blue-600 hover:underline text-sm">
-            ← Retour à l'accueil
-          </Link>
-        </div>
       </div>
-    </div>
+    </main>
   );
 }

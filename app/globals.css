@@ -11,44 +11,108 @@ html {
 }
 
 body {
-  @apply bg-surface text-text font-body;
+  @apply bg-mist text-text font-body;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-main {
-  @apply bg-white;
+/* Selection — aquatic */
+::selection {
+  background: rgba(12, 180, 219, 0.25);
+  color: #0A2540;
+}
+
+/* Slow page background ambience: subtle aqua aurora */
+.bg-aqua-aurora {
+  background:
+    radial-gradient(60% 50% at 80% 0%, rgba(107, 220, 255, 0.35) 0%, rgba(107, 220, 255, 0) 70%),
+    radial-gradient(50% 50% at 0% 100%, rgba(155, 241, 228, 0.30) 0%, rgba(155, 241, 228, 0) 70%),
+    linear-gradient(180deg, #F4F8FB 0%, #ECFBFF 100%);
 }
 
 @layer components {
-  /* Buttons */
+  /* ─────────────────────────────────────────────────────────
+     BUTTONS — Apple-style pills, glossy, accessible (≥48px)
+     ───────────────────────────────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-full
+           transition-all duration-200 select-none
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-400 focus-visible:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0;
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
   .btn-primary {
-    @apply bg-gradient-to-r from-primary to-primary-mid hover:shadow-ocean-md text-white font-bold py-3 px-6 rounded-sm transition-all duration-200;
+    @apply btn text-white shadow-ocean-md
+           bg-gradient-ocean-soft hover:shadow-ocean-lg
+           active:translate-y-px;
+    background-size: 180% 180%;
+    background-position: 30% 30%;
+  }
+  .btn-primary:hover {
+    background-position: 70% 70%;
+  }
+
+  .btn-aqua {
+    @apply btn text-white shadow-aqua-glow
+           bg-gradient-lagoon
+           active:translate-y-px;
   }
 
   .btn-outline {
-    @apply border border-primary text-primary bg-transparent hover:bg-primary/5 font-bold py-3 px-6 rounded-sm transition-all;
+    @apply btn bg-white/70 backdrop-blur border border-white/60 text-primary
+           hover:bg-white hover:shadow-ocean-sm active:translate-y-px;
   }
 
   .btn-secondary {
-    @apply bg-surface hover:bg-border text-text font-bold py-3 px-6 rounded-sm transition-colors;
+    @apply btn bg-surface text-text hover:bg-border;
   }
 
   .btn-ghost {
-    @apply bg-surface text-text-secondary hover:bg-border font-bold py-2 px-4 rounded-sm transition-colors;
+    @apply btn bg-transparent text-text-secondary hover:bg-white/60 hover:text-text;
   }
 
   .btn-danger {
-    @apply bg-danger-light text-danger font-bold py-3 px-6 rounded-sm hover:bg-danger/10 transition-colors;
+    @apply btn bg-danger-light text-danger hover:bg-danger/15;
   }
 
-  /* Cards */
+  .btn-sm {
+    min-height: 40px;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .btn-lg {
+    min-height: 56px;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     CARDS — Glassmorphic, refined edges
+     ───────────────────────────────────────────────────────── */
   .card {
-    @apply bg-white border border-border rounded-lg p-7 shadow-ocean-sm transition-all hover:shadow-ocean-md;
+    @apply relative rounded-lg bg-white border border-white/70 p-7 shadow-ocean-sm
+           transition-all duration-300;
+  }
+  .card:hover {
+    @apply shadow-ocean-md -translate-y-0.5;
+  }
+
+  .card-glass {
+    @apply relative rounded-lg p-7 shadow-glass border border-white/60
+           backdrop-blur-md transition-all duration-300;
+    background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(236,251,255,0.55) 100%);
+  }
+  .card-glass:hover {
+    @apply shadow-ocean-md -translate-y-0.5;
   }
 
   .card-blue {
-    @apply bg-primary/5 border border-primary/15 rounded-lg p-7;
+    @apply rounded-lg p-7 border border-primary/15 bg-primary/5;
   }
 
   .stat-card {
@@ -59,59 +123,111 @@ main {
     @apply bg-surface border border-border rounded-md p-4 flex items-center gap-3;
   }
 
-  /* Badges */
+  /* ─────────────────────────────────────────────────────────
+     PORTAL CARDS — Used on home page for role selection
+     ───────────────────────────────────────────────────────── */
+  .portal-card {
+    @apply relative overflow-hidden rounded-lg bg-white p-7 shadow-ocean-sm
+           border border-white/80 transition-all duration-300;
+  }
+  .portal-card:hover {
+    @apply shadow-ocean-lg -translate-y-1;
+  }
+  .portal-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(12,180,219,0.08), rgba(11,94,168,0.04));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .portal-card:hover::before { opacity: 1; }
+
+  /* ─────────────────────────────────────────────────────────
+     BADGES — pill, dot indicator, refined
+     ───────────────────────────────────────────────────────── */
   .badge {
     @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold;
   }
+  .badge-blue   { @apply bg-primary/10 text-primary; }
+  .badge-aqua   { @apply bg-aqua-100 text-aqua-700; }
+  .badge-green  { @apply bg-success-light text-success; }
+  .badge-orange { @apply bg-warning-light text-warning; }
+  .badge-red    { @apply bg-danger-light text-danger; }
+  .badge-dot    { @apply w-1.5 h-1.5 rounded-full; }
 
-  .badge-blue {
-    @apply bg-primary/10 text-primary;
+  /* ─────────────────────────────────────────────────────────
+     TYPOGRAPHY
+     ───────────────────────────────────────────────────────── */
+  .display-1 {
+    @apply font-display font-bold text-text;
+    font-size: clamp(2.5rem, 5vw + 1rem, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+  .display-2 {
+    @apply font-display font-bold text-text;
+    font-size: clamp(2rem, 3vw + 1rem, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+  }
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.18em] text-aqua-600;
   }
 
-  .badge-green {
-    @apply bg-success-light text-success;
-  }
-
-  .badge-orange {
-    @apply bg-warning-light text-warning;
-  }
-
-  .badge-red {
-    @apply bg-danger-light text-danger;
-  }
-
-  .badge-dot {
-    @apply w-1.5 h-1.5 rounded-full;
-  }
-
-  /* Typography */
   .section-title {
-    @apply text-2xl font-black text-text font-display border-b border-border pb-3 mb-5 -tracking-wider;
+    @apply text-2xl font-bold text-text font-display border-b border-border pb-3 mb-5;
+    letter-spacing: -0.02em;
   }
 
   .section-header {
     @apply flex items-center gap-4 mb-6;
   }
 
-  /* Inputs */
+  /* ─────────────────────────────────────────────────────────
+     INPUTS — refined fields with subtle focus aurora
+     ───────────────────────────────────────────────────────── */
   .input-base {
-    @apply w-full px-4 py-3 bg-surface border border-border rounded-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all;
+    @apply w-full px-4 py-3 bg-white border border-border rounded-sm text-text placeholder:text-text-muted
+           focus:outline-none focus:border-aqua-400 focus:ring-4 focus:ring-aqua-100
+           transition-all duration-200;
+    min-height: 48px;
   }
-
-  .input-base:valid {
-    @apply border-success;
-  }
-
   .input-base.error {
-    @apply border-danger;
+    @apply border-danger focus:border-danger focus:ring-danger/15;
   }
 
-  /* Progress Bar */
+  .input-wrap {
+    @apply relative;
+  }
+  .input-wrap > .input-icon {
+    @apply absolute left-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none;
+  }
+  .input-wrap > input {
+    @apply pl-12;
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     PROGRESS BAR
+     ───────────────────────────────────────────────────────── */
   .progress-bar {
     @apply h-1 bg-surface rounded-full overflow-hidden;
   }
-
   .progress-fill {
-    @apply h-full bg-gradient-to-r from-primary to-primary-mid transition-all rounded-full;
+    @apply h-full bg-gradient-lagoon transition-all rounded-full;
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     DECORATIVE — animated water shine on dark heroes
+     ───────────────────────────────────────────────────────── */
+  .shine-overlay {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(115deg,
+      rgba(255,255,255,0) 30%,
+      rgba(255,255,255,0.18) 50%,
+      rgba(255,255,255,0) 70%);
+    background-size: 200% 100%;
+    animation: shimmer 8s linear infinite;
   }
 }
