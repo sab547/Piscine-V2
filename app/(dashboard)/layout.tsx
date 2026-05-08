@@ -9,7 +9,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-white">
       <TopBar />
-      <main className="pb-20">{children}</main>
+      <main className="pb-24">{children}</main>
       <BottomNav />
     </div>
   );

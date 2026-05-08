@@ -85,7 +85,7 @@ export default function Home() {
             icon={<Wrench className="w-8 h-8 text-primary" />}
             title="Espace Technicien"
             description="Gérez vos interventions et passages"
-            href="/"
+            href="/dashboard"
             color="primary"
             items={[
               'Voir le planning',
