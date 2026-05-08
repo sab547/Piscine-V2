@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { successResponse, errorResponse } from '@/lib/api/response';
 
+export const dynamic = 'force-dynamic';
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function GET(request: NextRequest) {

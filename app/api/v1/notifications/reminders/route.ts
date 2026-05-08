@@ -1,5 +1,7 @@
 import { NextRequest } from 'next/server';
 import { successResponse, errorResponse } from '@/lib/api/response';
+export const dynamic = 'force-dynamic';
+
 import { sendReminderEmail } from '@/lib/email/sendEmail';
 
 // Vercel Cron - called every day
