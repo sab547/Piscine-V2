@@ -2,7 +2,7 @@
 
 import { Calendar, MapPin, Filter } from 'lucide-react';
 import { useState } from 'react';
-import { mockMissions, mockPiscines, getStatusLabel, getStatusColor } from '@/lib/mock-data';
+import { mockMissions, getStatusLabel, getStatusColor } from '@/lib/mock-data';
 
 export default function AdminInterventionsPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');

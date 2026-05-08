@@ -1,6 +1,6 @@
 'use client';
 
-import { Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { mockTechnicien, mockMissions } from '@/lib/mock-data';
 
 export default function AdminTechniciensPage() {

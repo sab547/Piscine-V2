@@ -1,7 +1,7 @@
 'use client';
 
 import { Users, Droplets, TrendingUp, AlertCircle } from 'lucide-react';
-import { mockProprietaire, mockPiscines, mockMissions } from '@/lib/mock-data';
+import { mockPiscines, mockMissions } from '@/lib/mock-data';
 
 interface StatCardProps {
   icon: React.ReactNode;
