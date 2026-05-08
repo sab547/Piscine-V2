@@ -5,7 +5,16 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Public routes (no auth needed)
-  const publicRoutes = ['/api/v1/auth', '/portail', '/tarifs', '/', '/login', '/admin/login'];
+  const publicRoutes = [
+    '/api/v1/auth',
+    '/portail',
+    '/tarifs',
+    '/',
+    '/login',
+    '/admin/login',
+    '/technicien/acces',
+    '/technicien/login',
+  ];
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
   if (isPublicRoute) {
