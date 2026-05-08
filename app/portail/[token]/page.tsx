@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import {
   Download,
   Calendar,
@@ -162,9 +163,11 @@ export default function PortalPage({ params: _params }: PortalPageProps) {
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-lg overflow-hidden bg-border">
-                    <img
+                    <Image
                       src={passage.photoBefore}
                       alt="Avant"
+                      width={200}
+                      height={200}
                       className="w-full aspect-square object-cover"
                     />
                     <p className="bg-surface text-xs font-semibold text-text text-center py-2">
@@ -172,9 +175,11 @@ export default function PortalPage({ params: _params }: PortalPageProps) {
                     </p>
                   </div>
                   <div className="rounded-lg overflow-hidden bg-border">
-                    <img
+                    <Image
                       src={passage.photoAfter}
                       alt="Après"
+                      width={200}
+                      height={200}
                       className="w-full aspect-square object-cover"
                     />
                     <p className="bg-success/10 text-xs font-semibold text-success text-center py-2">
