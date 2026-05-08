@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Droplets, ChevronRight, AlertCircle } from 'lucide-react';
+import { Search, Droplets, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { mockPiscines, mockNormes } from '@/lib/mock-data';
