@@ -1,0 +1,42 @@
+{
+  "name": "pooltrack",
+  "version": "1.0.0",
+  "description": "PoolTrack - SaaS for pool maintenance companies",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "@supabase/supabase-js": "^2.38.0",
+    "@supabase/auth-helpers-nextjs": "^0.8.0",
+    "prisma": "^5.8.0",
+    "@prisma/client": "^5.8.0",
+    "resend": "^1.0.0",
+    "@react-pdf/renderer": "^3.3.0",
+    "stripe": "^14.15.0",
+    "zod": "^3.22.0",
+    "date-fns": "^3.3.0",
+    "lucide-react": "^0.396.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "eslint": "^8.55.0",
+    "eslint-config-next": "^14.2.0"
+  }
+}

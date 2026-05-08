@@ -1,0 +1,188 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ────────────────────────────────────────────────────────
+enum Plan {
+  STANDARD
+  PRO
+  WHITE_LABEL
+}
+
+enum Role {
+  GERANT
+  TECHNICIEN
+}
+
+enum StatutPassage {
+  PLANIFIE
+  EN_COURS
+  COMPLETE
+  ANNULE
+}
+
+enum TypePhoto {
+  AVANT
+  APRES
+  ANOMALIE
+}
+
+enum Gravite {
+  HAUTE
+  MOYENNE
+  FAIBLE
+}
+
+enum StatutDevis {
+  BROUILLON
+  ENVOYE
+  ACCEPTE
+  REFUSE
+  EXPIRE
+}
+
+enum TypePiscine {
+  PRIVEE
+  COPROPRIETE
+  HOTEL
+}
+
+// ─── MODÈLES ──────────────────────────────────────────────────────
+model Tenant {
+  id            String    @id @default(cuid())
+  nom           String
+  siret         String?
+  logo          String?
+  email         String    @unique
+  telephone     String?
+  plan          Plan      @default(STANDARD)
+  stripeId      String?   @unique
+  actif         Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  users         User[]
+  piscines      Piscine[]
+  proprietaires Proprietaire[]
+  passages      Passage[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  email     String   @unique
+  nom       String
+  prenom    String
+  role      Role     @default(TECHNICIEN)
+  actif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  passages  Passage[]
+
+  @@index([tenantId])
+}
+
+model Proprietaire {
+  id           String     @id @default(cuid())
+  tenantId     String
+  tenant       Tenant     @relation(fields: [tenantId], references: [id])
+  nom          String
+  prenom       String
+  email        String
+  telephone    String?
+  portailToken String     @unique @default(cuid())
+  piscines     Piscine[]
+  createdAt    DateTime   @default(now())
+
+  @@index([tenantId])
+}
+
+model Piscine {
+  id             String       @id @default(cuid())
+  tenantId       String
+  tenant         Tenant       @relation(fields: [tenantId], references: [id])
+  proprietaireId String
+  proprietaire   Proprietaire @relation(fields: [proprietaireId], references: [id])
+  nom            String
+  adresse        String
+  ville          String
+  codePostal     String
+  type           TypePiscine  @default(PRIVEE)
+  volume         Int?
+  equipements    String[]
+  note           String?
+  actif          Boolean      @default(true)
+  passages       Passage[]
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+}
+
+model Passage {
+  id           String        @id @default(cuid())
+  tenantId     String
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  piscineId    String
+  piscine      Piscine       @relation(fields: [piscineId], references: [id])
+  technicienId String
+  technicien   User          @relation(fields: [technicienId], references: [id])
+  statut       StatutPassage @default(PLANIFIE)
+  datePrevu    DateTime
+  dateDebut    DateTime?
+  dateFin      DateTime?
+  ph           Float?
+  chlore       Float?
+  temperature  Float?
+  actions      String[]
+  note         String?
+  photos       Photo[]
+  anomalies    Anomalie[]
+  pdfUrl       String?
+  emailEnvoye  Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+
+  @@index([tenantId, datePrevu])
+  @@index([technicienId])
+}
+
+model Photo {
+  id        String    @id @default(cuid())
+  passageId String
+  passage   Passage   @relation(fields: [passageId], references: [id])
+  type      TypePhoto
+  url       String
+  createdAt DateTime  @default(now())
+
+  @@index([passageId])
+}
+
+model Anomalie {
+  id          String   @id @default(cuid())
+  passageId   String
+  passage     Passage  @relation(fields: [passageId], references: [id])
+  description String
+  gravite     Gravite  @default(MOYENNE)
+  traite      Boolean  @default(false)
+  traiteLe    DateTime?
+  devisId     String?
+  createdAt   DateTime @default(now())
+}
+
+model Devis {
+  id         String      @id @default(cuid())
+  tenantId   String
+  numero     String
+  statut     StatutDevis @default(BROUILLON)
+  montantHT  Decimal     @db.Decimal(10, 2)
+  montantTTC Decimal     @db.Decimal(10, 2)
+  validJusqu DateTime
+  signeA     DateTime?
+  signeNom   String?
+  pdfUrl     String?
+  createdAt  DateTime    @default(now())
+
+  @@index([tenantId, statut])
+}
