@@ -1,7 +1,6 @@
 'use client';
 
 import { MapPin, Wrench, AlertCircle, Calendar } from 'lucide-react';
-import Link from 'next/link';
 import { useState } from 'react';
 import { mockPiscines } from '@/lib/mock-data';
 
