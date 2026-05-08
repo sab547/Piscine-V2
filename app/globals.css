@@ -11,41 +11,107 @@ html {
 }
 
 body {
-  @apply bg-white text-text;
+  @apply bg-surface text-text font-body;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+main {
+  @apply bg-white;
+}
+
 @layer components {
+  /* Buttons */
   .btn-primary {
-    @apply bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-lg transition-colors;
+    @apply bg-gradient-to-r from-primary to-primary-mid hover:shadow-ocean-md text-white font-bold py-3 px-6 rounded-sm transition-all duration-200;
+  }
+
+  .btn-outline {
+    @apply border border-primary text-primary bg-transparent hover:bg-primary/5 font-bold py-3 px-6 rounded-sm transition-all;
   }
 
   .btn-secondary {
-    @apply bg-surface hover:bg-border text-text font-semibold py-2 px-4 rounded-lg transition-colors;
+    @apply bg-surface hover:bg-border text-text font-bold py-3 px-6 rounded-sm transition-colors;
   }
 
+  .btn-ghost {
+    @apply bg-surface text-text-secondary hover:bg-border font-bold py-2 px-4 rounded-sm transition-colors;
+  }
+
+  .btn-danger {
+    @apply bg-danger-light text-danger font-bold py-3 px-6 rounded-sm hover:bg-danger/10 transition-colors;
+  }
+
+  /* Cards */
   .card {
-    @apply bg-white border border-border rounded-xl p-4 shadow-sm;
+    @apply bg-white border border-border rounded-lg p-7 shadow-ocean-sm transition-all hover:shadow-ocean-md;
   }
 
   .card-blue {
-    @apply bg-primary/5 border border-primary/20 rounded-xl p-4;
+    @apply bg-primary/5 border border-primary/15 rounded-lg p-7;
   }
 
   .stat-card {
-    @apply bg-white border-l-4 border-primary rounded-xl p-4 shadow-sm;
+    @apply bg-white border-l-4 border-primary rounded-lg p-6 shadow-ocean-sm;
   }
 
-  .badge-teal {
-    @apply bg-primary/10 text-primary font-semibold px-3 py-1 rounded-full text-xs;
+  .measure-card {
+    @apply bg-surface border border-border rounded-md p-4 flex items-center gap-3;
   }
 
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold;
+  }
+
+  .badge-blue {
+    @apply bg-primary/10 text-primary;
+  }
+
+  .badge-green {
+    @apply bg-success-light text-success;
+  }
+
+  .badge-orange {
+    @apply bg-warning-light text-warning;
+  }
+
+  .badge-red {
+    @apply bg-danger-light text-danger;
+  }
+
+  .badge-dot {
+    @apply w-1.5 h-1.5 rounded-full;
+  }
+
+  /* Typography */
   .section-title {
-    @apply text-lg font-bold text-text font-display border-b border-border pb-2 mb-4;
+    @apply text-2xl font-black text-text font-display border-b border-border pb-3 mb-5 -tracking-wider;
   }
 
+  .section-header {
+    @apply flex items-center gap-4 mb-6;
+  }
+
+  /* Inputs */
   .input-base {
-    @apply w-full px-4 py-2 bg-white border border-border rounded-lg font-body text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+    @apply w-full px-4 py-3 bg-surface border border-border rounded-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all;
+  }
+
+  .input-base:valid {
+    @apply border-success;
+  }
+
+  .input-base.error {
+    @apply border-danger;
+  }
+
+  /* Progress Bar */
+  .progress-bar {
+    @apply h-1 bg-surface rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full bg-gradient-to-r from-primary to-primary-mid transition-all rounded-full;
   }
 }
