@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertCircle, CheckCircle2, Wrench, Trash2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface Anomaly {
