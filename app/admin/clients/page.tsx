@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, MapPin, Droplets, Mail, Phone, Calendar, ExternalLink, Users } from 'lucide-react';
+import { Search, MapPin, Mail, Phone, Calendar, ExternalLink, Users } from 'lucide-react';
 import { useState } from 'react';
 import { mockProprietaire, mockPiscines } from '@/lib/mock-data';
 
