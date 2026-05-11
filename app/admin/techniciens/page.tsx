@@ -1,6 +1,6 @@
 'use client';
 
-import { Clock, Star, Briefcase, CheckCircle2, TrendingUp, Edit3 } from 'lucide-react';
+import { Clock, Star, Briefcase, TrendingUp, Edit3 } from 'lucide-react';
 import { mockTechnicien, mockMissions } from '@/lib/mock-data';
 import { StatutPassage } from '@/types';
 

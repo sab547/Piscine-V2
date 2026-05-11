@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar, Clock, MapPin, ChevronRight, CalendarDays } from 'lucide-react';
+import { Clock, MapPin, ChevronRight, CalendarDays } from 'lucide-react';
 import Link from 'next/link';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import { fr } from 'date-fns/locale';

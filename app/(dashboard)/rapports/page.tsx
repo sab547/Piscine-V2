@@ -1,6 +1,6 @@
 'use client';
 
-import { Download, Calendar, CheckCircle2, FileText, TrendingUp, Printer } from 'lucide-react';
+import { Download, Calendar, FileText } from 'lucide-react';
 import { mockMissions } from '@/lib/mock-data';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
