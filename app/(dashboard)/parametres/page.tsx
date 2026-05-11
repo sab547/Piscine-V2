@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  User, Bell, Shield, LogOut, ChevronRight, Building2,
+  Bell, Shield, LogOut, ChevronRight, Building2,
   Key, CreditCard, Clock, Mail, Copy, CheckCircle2, RefreshCw,
   Link as LinkIcon, Phone, Hash,
 } from 'lucide-react';
