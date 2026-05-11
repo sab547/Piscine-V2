@@ -2,7 +2,7 @@
 
 import {
   Bell, Shield, LogOut, ChevronRight, Building2,
-  Key, CreditCard, Clock, Mail, Copy, CheckCircle2, RefreshCw,
+  Key, CreditCard, Mail, Copy, CheckCircle2, RefreshCw,
   Link as LinkIcon, Phone, Hash,
 } from 'lucide-react';
 import { useState } from 'react';
