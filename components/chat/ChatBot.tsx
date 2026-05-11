@@ -60,7 +60,7 @@ export function ChatBot() {
     if (!open && messages.length > 1) {
       setUnread((u) => u + 1);
     }
-  }, [messages.length]);
+  }, [messages.length, open]);
 
   const handleOpen = () => {
     setOpen(true);
