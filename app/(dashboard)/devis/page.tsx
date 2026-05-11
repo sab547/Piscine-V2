@@ -5,7 +5,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Plus, Trash2, Send, FileText, CheckCircle2, PenLine, RotateCcw, Loader2 } from 'lucide-react';
 import { mockProprietaire, mockPiscines } from '@/lib/mock-data';
 import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 
 interface LineItem {
   id: string;
