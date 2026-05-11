@@ -1,6 +1,6 @@
 'use client';
 
-import { MapPin, Wrench, AlertCircle, Calendar } from 'lucide-react';
+import { MapPin, Wrench, AlertCircle, Calendar, Droplets, Thermometer, FlaskConical, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { mockPiscines } from '@/lib/mock-data';
 
@@ -10,94 +10,94 @@ interface PoolDetailsPageProps {
   };
 }
 
+const TABS = [
+  { key: 'info', label: 'Infos' },
+  { key: 'history', label: 'Historique' },
+  { key: 'anomalies', label: 'Anomalies' },
+];
+
 export default function PoolDetailsPage({ params }: PoolDetailsPageProps) {
-  const [activeTab, setActiveTab] = useState<'info' | 'history' | 'anomalies'>(
-    'info'
-  );
+  const [activeTab, setActiveTab] = useState<'info' | 'history' | 'anomalies'>('info');
 
   const piscine = mockPiscines.find((p) => p.id === params.id);
 
   if (!piscine) {
     return (
-      <div className="px-4 py-12 text-center">
-        <p className="text-lg font-semibold text-text">Piscine non trouvée</p>
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-6">
+        <div className="w-16 h-16 bg-surface rounded-2xl flex items-center justify-center mb-4">
+          <Droplets className="w-8 h-8 text-text-muted" />
+        </div>
+        <p className="font-bold text-text">Piscine non trouvée</p>
+        <p className="text-sm text-text-muted mt-1">Vérifiez l'identifiant et réessayez</p>
       </div>
     );
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Header Card */}
-      <div className="bg-gradient-to-br from-accent to-primary text-white px-4 py-6 space-y-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold font-display">{piscine.nom}</h1>
-            <div className="flex items-center gap-2 text-white/80 mt-2">
-              <MapPin className="w-4 h-4" />
-              <p className="text-sm">
-                {piscine.adresse}, {piscine.ville}
-              </p>
-            </div>
-          </div>
-        </div>
+  const typeLabel = piscine.type === 'PRIVEE' ? 'Privée' : piscine.type === 'COPROPRIETE' ? 'Copropriété' : 'Hôtel';
 
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="bg-white/20 rounded-lg px-3 py-2">
-            <p className="text-white/70 text-xs">Type</p>
-            <p className="font-semibold">
-              {piscine.type === 'PRIVEE'
-                ? 'Privée'
-                : piscine.type === 'COPROPRIETE'
-                  ? 'Copropriété'
-                  : 'Hôtel'}
-            </p>
+  return (
+    <div className="space-y-0">
+      {/* Hero header */}
+      <div className="bg-gradient-to-br from-accent to-primary text-white px-5 pt-6 pb-8 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white" />
+          <div className="absolute -bottom-12 -left-12 w-56 h-56 rounded-full bg-white" />
+        </div>
+        <div className="relative">
+          <h1 className="text-2xl font-black font-display leading-tight">{piscine.nom}</h1>
+          <div className="flex items-center gap-1.5 text-white/75 mt-2">
+            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+            <p className="text-sm">{piscine.adresse}, {piscine.ville}</p>
           </div>
-          {piscine.volume && (
-            <div className="bg-white/20 rounded-lg px-3 py-2">
-              <p className="text-white/70 text-xs">Volume</p>
-              <p className="font-semibold">{piscine.volume}L</p>
-            </div>
-          )}
+
+          <div className="grid grid-cols-3 gap-2.5 mt-5">
+            {[
+              { label: 'Type', value: typeLabel },
+              { label: 'Volume', value: piscine.volume ? `${piscine.volume}L` : '—' },
+              { label: 'Équip.', value: `${piscine.equipements.length}` },
+            ].map(s => (
+              <div key={s.label} className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
+                <p className="text-lg font-black font-mono">{s.value}</p>
+                <p className="text-[10px] text-white/70 mt-0.5 font-semibold">{s.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="px-4">
-        <div className="flex gap-2 border-b border-border">
-          {['info', 'history', 'anomalies'].map((tab) => (
+      <div className="bg-white border-b border-border/70 px-4 sticky top-12 z-20">
+        <div className="flex gap-0">
+          {TABS.map(({ key, label }) => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab as any)}
-              className={`py-3 px-4 font-semibold text-sm transition-colors border-b-2 ${
-                activeTab === tab
+              key={key}
+              onClick={() => setActiveTab(key as any)}
+              className={`flex-1 py-3.5 text-sm font-bold border-b-2 transition-all ${
+                activeTab === key
                   ? 'text-primary border-primary'
                   : 'text-text-muted border-transparent hover:text-text'
               }`}
             >
-              {tab === 'info'
-                ? 'Infos'
-                : tab === 'history'
-                  ? 'Historique'
-                  : 'Anomalies'}
+              {label}
             </button>
           ))}
         </div>
       </div>
 
       {/* Content */}
-      <div className="px-4 pb-6">
+      <div className="p-4 pb-8 space-y-3">
         {activeTab === 'info' && (
-          <div className="space-y-4">
+          <>
             {piscine.equipements.length > 0 && (
-              <div className="bg-surface border border-border rounded-lg p-4 space-y-3">
-                <h3 className="font-semibold text-text flex items-center gap-2">
-                  <Wrench className="w-4 h-4" />
-                  Équipements
-                </h3>
-                <ul className="space-y-2">
+              <div className="bg-white border border-border/70 rounded-2xl shadow-[0_1px_4px_rgba(11,94,168,0.06)] overflow-hidden">
+                <div className="flex items-center gap-2.5 px-4 py-3.5 border-b border-border/50 bg-surface/50">
+                  <Wrench className="w-4 h-4 text-primary" />
+                  <h3 className="font-bold text-text text-sm">Équipements</h3>
+                </div>
+                <ul className="divide-y divide-border/40">
                   {piscine.equipements.map((equip, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm">
-                      <span className="w-2 h-2 rounded-full bg-primary" />
+                    <li key={i} className="flex items-center gap-3 px-4 py-3 text-sm text-text">
+                      <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
                       {equip}
                     </li>
                   ))}
@@ -106,56 +106,59 @@ export default function PoolDetailsPage({ params }: PoolDetailsPageProps) {
             )}
 
             {piscine.note && (
-              <div className="bg-accent/10 border border-accent rounded-lg p-4">
-                <h3 className="font-semibold text-text mb-2">Notes</h3>
-                <p className="text-sm text-text-muted">{piscine.note}</p>
+              <div className="bg-white border border-accent/30 rounded-2xl p-4 shadow-[0_1px_4px_rgba(11,94,168,0.06)]">
+                <h3 className="font-bold text-text text-sm mb-2">Notes</h3>
+                <p className="text-sm text-text-muted leading-relaxed">{piscine.note}</p>
               </div>
             )}
 
-            <div className="bg-primary/10 border border-primary rounded-lg p-4">
-              <p className="text-xs text-primary font-semibold mb-2">
-                Créé le {new Date(piscine.createdAt).toLocaleDateString('fr-FR')}
+            <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4">
+              <p className="text-xs font-semibold text-primary/70 mb-1">Enregistrée le</p>
+              <p className="text-sm font-bold text-primary">
+                {new Date(piscine.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
-              <p className="text-xs text-primary/80">
-                ID : {piscine.id.slice(0, 8)}...
-              </p>
+              <p className="text-[10px] text-primary/50 mt-1 font-mono">ID {piscine.id.slice(0, 8).toUpperCase()}</p>
             </div>
-          </div>
+          </>
         )}
 
         {activeTab === 'history' && (
           <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
+            {[
+              { i: 1, ph: '7.2', cl: '1.8', temp: '26°C', ok: true },
+              { i: 2, ph: '7.4', cl: '1.5', temp: '25°C', ok: true },
+              { i: 3, ph: '7.8', cl: '1.1', temp: '24°C', ok: false },
+            ].map(({ i, ph, cl, temp, ok }) => (
               <div
                 key={i}
-                className="bg-surface border border-border rounded-lg p-4 flex items-start gap-3"
+                className="bg-white border border-border/70 rounded-2xl shadow-[0_1px_4px_rgba(11,94,168,0.06)] overflow-hidden hover:border-primary/20 active:scale-[0.99] transition-all"
               >
-                <Calendar className="w-4 h-4 text-primary flex-shrink-0 mt-1" />
-                <div className="flex-1 space-y-1">
-                  <p className="font-semibold text-text text-sm">
-                    Passage #{i}
-                  </p>
-                  <p className="text-xs text-text-muted">
-                    {new Date(
-                      Date.now() - i * 24 * 60 * 60 * 1000
-                    ).toLocaleDateString('fr-FR', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
-                  <div className="flex gap-2 mt-2">
-                    <span className="text-xs bg-success/20 text-success px-2 py-1 rounded-full">
-                      pH: 7.2
-                    </span>
-                    <span className="text-xs bg-success/20 text-success px-2 py-1 rounded-full">
-                      Cl: 1.8
-                    </span>
-                    <span className="text-xs bg-success/20 text-success px-2 py-1 rounded-full">
-                      T°: 26°C
-                    </span>
+                <div className="flex items-center gap-3 p-4">
+                  <div className={`w-1.5 self-stretch rounded-full flex-shrink-0 ${ok ? 'bg-success' : 'bg-warning'}`} />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="font-bold text-text text-sm">Passage #{i}</p>
+                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${ok ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>
+                        {ok ? 'Conforme' : 'Anomalie'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-text-muted mb-2.5">
+                      <Calendar className="w-3 h-3 inline mr-1" />
+                      {new Date(Date.now() - i * 7 * 24 * 60 * 60 * 1000).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                    </p>
+                    <div className="flex gap-2">
+                      <span className={`flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${ok ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>
+                        <FlaskConical className="w-3 h-3" /> pH {ph}
+                      </span>
+                      <span className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/8 text-primary">
+                        <Droplets className="w-3 h-3" /> Cl {cl}
+                      </span>
+                      <span className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-accent/10 text-accent">
+                        <Thermometer className="w-3 h-3" /> {temp}
+                      </span>
+                    </div>
                   </div>
+                  <ChevronRight className="w-4 h-4 text-text-muted flex-shrink-0" />
                 </div>
               </div>
             ))}
@@ -164,23 +167,31 @@ export default function PoolDetailsPage({ params }: PoolDetailsPageProps) {
 
         {activeTab === 'anomalies' && (
           <div className="space-y-3">
-            <div className="bg-warning/10 border border-warning rounded-lg p-4 flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-semibold text-text text-sm">
-                  pH légèrement élevé
-                </p>
-                <p className="text-xs text-text-muted mt-1">
-                  Dernier passage : pH 7.8 (norme: 7.0-7.6)
-                </p>
-                <button className="text-xs font-semibold text-warning hover:text-warning/80 mt-2">
-                  Voir le rapport →
-                </button>
+            <div className="bg-white border border-warning/30 rounded-2xl shadow-[0_1px_4px_rgba(11,94,168,0.06)] overflow-hidden">
+              <div className="flex items-start gap-3 p-4">
+                <div className="w-9 h-9 rounded-xl bg-warning/10 flex items-center justify-center flex-shrink-0">
+                  <AlertCircle className="w-5 h-5 text-warning" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="font-bold text-text text-sm">pH légèrement élevé</p>
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-warning/10 text-warning">Actif</span>
+                  </div>
+                  <p className="text-xs text-text-muted">
+                    Dernier passage : pH 7.8 (norme : 7.0 – 7.6)
+                  </p>
+                  <button className="mt-3 text-xs font-bold text-warning bg-warning/10 hover:bg-warning/20 active:scale-95 px-3 py-1.5 rounded-xl transition-all">
+                    Voir le rapport →
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="text-center py-6 text-text-muted text-sm">
-              Aucune autre anomalie active
+            <div className="text-center py-8">
+              <div className="w-12 h-12 bg-success/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <AlertCircle className="w-6 h-6 text-success" />
+              </div>
+              <p className="text-sm font-semibold text-text-muted">Aucune autre anomalie active</p>
             </div>
           </div>
         )}
