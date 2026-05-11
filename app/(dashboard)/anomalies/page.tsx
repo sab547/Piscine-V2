@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle, CheckCircle2, Trash2, FileText, ArrowRight, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Trash2, FileText, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
