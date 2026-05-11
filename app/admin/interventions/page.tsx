@@ -18,7 +18,7 @@ const FILTERS = [
 export default function AdminInterventionsPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  const interventions = mockMissions.map((mission, i) => ({
+  const interventions = mockMissions.map((mission) => ({
     id: mission.id,
     piscine: mission.client,
     adresse: mission.adresse,
