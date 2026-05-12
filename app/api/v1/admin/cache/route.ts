@@ -1,10 +1,9 @@
 import { NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
+import { env } from '@/lib/env';
 import { successResponse, errorResponse } from '@/lib/api/response';
 
 export const dynamic = 'force-dynamic';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,7 +17,7 @@ export async function GET(request: NextRequest) {
     let decoded: any;
 
     try {
-      decoded = jwt.verify(token, JWT_SECRET);
+      decoded = jwt.verify(token, env.JWT_SECRET);
       if (!decoded.admin) {
         return errorResponse('Forbidden', 403);
       }

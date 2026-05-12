@@ -1,20 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import { z } from 'zod';
+import { env } from '@/lib/env';
+import { checkRateLimit, rateLimitResponse } from '@/lib/security/rateLimit';
 
 export const dynamic = 'force-dynamic';
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1),
+  password: z.string().min(1).max(128),
 });
 
-// Mock user database - TODO: Replace with actual database queries
+// Demo users with bcrypt-hashed passwords.
+// Hash of 'password123' with cost 10.
+// To regenerate: node -e "require('bcryptjs').hash('password123',10).then(console.log)"
+const MOCK_PASSWORD_HASH = bcrypt.hashSync('password123', 10);
+
 const mockUsers = [
   {
     id: 'user_1',
     email: 'pisciniste@example.com',
-    password: 'password123', // TODO: Use bcrypt hash
+    passwordHash: MOCK_PASSWORD_HASH,
     role: 'pisciniste',
     tenantId: 'tenant_1',
     name: 'Jean Dupont',
@@ -22,7 +29,7 @@ const mockUsers = [
   {
     id: 'user_2',
     email: 'technicien@example.com',
-    password: 'password123',
+    passwordHash: MOCK_PASSWORD_HASH,
     role: 'technicien',
     tenantId: 'tenant_1',
     name: 'Pierre Martin',
@@ -30,21 +37,33 @@ const mockUsers = [
 ];
 
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') || 'unknown';
+
+  const rateKey = `login:${ip}`;
+  const { allowed, resetAt } = checkRateLimit(rateKey, 10, 15 * 60 * 1000);
+  if (!allowed) return rateLimitResponse(resetAt);
+
   try {
     const body = await request.json();
-    const { email, password } = loginSchema.parse(body);
+    const parsed = loginSchema.safeParse(body);
 
-    // TODO: Query actual database
-    const user = mockUsers.find(u => u.email === email && u.password === password);
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Email ou mot de passe incorrect' },
-        { status: 401 }
-      );
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Données invalides' }, { status: 400 });
     }
 
-    const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+    const { email, password } = parsed.data;
+
+    const user = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    // Always run bcrypt compare to prevent timing attacks
+    const validPassword = user
+      ? await bcrypt.compare(password, user.passwordHash)
+      : await bcrypt.compare(password, MOCK_PASSWORD_HASH);
+
+    if (!user || !validPassword) {
+      return NextResponse.json({ error: 'Email ou mot de passe incorrect' }, { status: 401 });
+    }
 
     const token = jwt.sign(
       {
@@ -54,8 +73,8 @@ export async function POST(request: NextRequest) {
         tenantId: user.tenantId,
         type: 'user',
       },
-      JWT_SECRET,
-      { expiresIn: '30d' }
+      env.JWT_SECRET,
+      { expiresIn: '24h' }
     );
 
     return NextResponse.json({
@@ -67,9 +86,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Login error:', error);
-    return NextResponse.json(
-      { error: 'Erreur lors de la connexion' },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'Erreur lors de la connexion' }, { status: 500 });
   }
 }

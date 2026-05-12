@@ -1,31 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { randomBytes } from 'crypto';
+import { checkRateLimit, rateLimitResponse } from '@/lib/security/rateLimit';
 
-// Mock proprietaire emails (in production, query database)
-const VALID_PROPRIETAIRES = {
-  'proprietaire@example.com': { id: 'prop-1', name: 'Monsieur Dupont', piscines: ['Piscine Privée'] },
-  'client@example.com': { id: 'prop-2', name: 'Marie Martin', piscines: ['Piscine Municipale'] },
+// Demo proprietaire emails. In production, query the database.
+const VALID_PROPRIETAIRES: Record<string, { id: string; name: string }> = {
+  'proprietaire@example.com': { id: 'prop-1', name: 'Monsieur Dupont' },
+  'client@example.com': { id: 'prop-2', name: 'Marie Martin' },
 };
 
-// Mock tokens storage (in production, use Redis or database with expiration)
-const MAGIC_TOKENS: Record<string, { email: string; expiresAt: number }> = {};
+// Tokens stored in memory with one-time-use enforcement.
+// Replace with Redis/DB for multi-instance deployments.
+const MAGIC_TOKENS = new Map<string, { email: string; expiresAt: number; used: boolean }>();
 
-function generateToken(): string {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+function generateSecureToken(): string {
+  return randomBytes(32).toString('hex');
 }
 
+// Clean up expired tokens periodically
+setInterval(() => {
+  const now = Date.now();
+  MAGIC_TOKENS.forEach((data, token) => {
+    if (data.expiresAt < now) MAGIC_TOKENS.delete(token);
+  });
+}, 60 * 1000);
+
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') || 'unknown';
+
+  const rateKey = `magic-link:${ip}`;
+  const { allowed, resetAt } = checkRateLimit(rateKey, 5, 15 * 60 * 1000);
+  if (!allowed) return rateLimitResponse(resetAt);
+
   try {
     const body = await request.json();
     const { email } = body;
 
-    if (!email || typeof email !== 'string') {
-      return NextResponse.json(
-        { error: 'Email requis' },
-        { status: 400 }
-      );
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+      return NextResponse.json({ error: 'Email requis' }, { status: 400 });
     }
 
-    const proprietaire = VALID_PROPRIETAIRES[email as keyof typeof VALID_PROPRIETAIRES];
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Always return the same response to prevent email enumeration
+    const proprietaire = VALID_PROPRIETAIRES[normalizedEmail];
 
     if (!proprietaire) {
       return NextResponse.json({
@@ -34,28 +52,26 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const token = generateToken();
-    const expiresAt = Date.now() + 1000 * 60 * 15;
-    
-    MAGIC_TOKENS[token] = {
-      email,
-      expiresAt,
-    };
+    const token = generateSecureToken();
+    const expiresAt = Date.now() + 15 * 60 * 1000; // 15 minutes
+
+    MAGIC_TOKENS.set(token, { email: normalizedEmail, expiresAt, used: false });
 
     const magicLink = `/portail/${token}`;
-    console.log(`Magic link for ${email}: ${magicLink}`);
+
+    // In development, expose the link for testing. In production, send by email.
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[Dev] Magic link for ${normalizedEmail}: ${magicLink}`);
+    }
 
     return NextResponse.json({
       success: true,
       message: 'Lien de connexion envoyé à votre email',
-      token: magicLink,
+      ...(process.env.NODE_ENV !== 'production' ? { token: magicLink } : {}),
     });
   } catch (error) {
     console.error('Magic link error:', error);
-    return NextResponse.json(
-      { error: 'Erreur lors de la génération du lien' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Erreur lors de la génération du lien' }, { status: 500 });
   }
 }
 
@@ -63,19 +79,24 @@ export async function GET(request: NextRequest) {
   try {
     const token = request.nextUrl.searchParams.get('token');
 
-    if (!token) {
+    if (!token || typeof token !== 'string') {
       return NextResponse.json({ error: 'Token requis' }, { status: 400 });
     }
 
-    const tokenData = MAGIC_TOKENS[token];
+    const tokenData = MAGIC_TOKENS.get(token);
 
-    if (!tokenData || tokenData.expiresAt < Date.now()) {
-      return NextResponse.json({ error: 'Lien expiré' }, { status: 401 });
+    if (!tokenData || tokenData.expiresAt < Date.now() || tokenData.used) {
+      return NextResponse.json({ error: 'Lien expiré ou déjà utilisé' }, { status: 401 });
     }
 
-    const proprietaire = VALID_PROPRIETAIRES[tokenData.email as keyof typeof VALID_PROPRIETAIRES];
+    // Mark as used immediately (one-time use)
+    tokenData.used = true;
 
-    delete MAGIC_TOKENS[token];
+    const proprietaire = VALID_PROPRIETAIRES[tokenData.email];
+
+    if (!proprietaire) {
+      return NextResponse.json({ error: 'Compte introuvable' }, { status: 404 });
+    }
 
     return NextResponse.json({
       valid: true,
@@ -85,9 +106,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Token verification error:', error);
-    return NextResponse.json(
-      { error: 'Erreur lors de la vérification' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Erreur lors de la vérification' }, { status: 500 });
   }
 }

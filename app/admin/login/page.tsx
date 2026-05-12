@@ -132,9 +132,11 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        <div className="pt-5 border-t border-white/60 text-center text-xs text-text-muted">
-          Démo : <code className="font-mono px-2 py-0.5 rounded bg-aqua-50 text-aqua-700">admin@pooltrack.com / admin123</code>
-        </div>
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="pt-5 border-t border-white/60 text-center text-xs text-text-muted">
+            Dev : <code className="font-mono px-2 py-0.5 rounded bg-aqua-50 text-aqua-700">admin@pooltrack.com / admin123</code>
+          </div>
+        )}
       </div>
     </main>
   );

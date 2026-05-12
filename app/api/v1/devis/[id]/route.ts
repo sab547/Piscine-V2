@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import { env } from '@/lib/env';
 
 export async function GET(
   request: NextRequest,
@@ -6,27 +8,39 @@ export async function GET(
 ) {
   try {
     const devisId = params.id;
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '');
 
-    if (!devisId || !token) {
-      return NextResponse.json({ error: 'Données manquantes' }, { status: 400 });
+    if (!devisId || typeof devisId !== 'string') {
+      return NextResponse.json({ error: 'ID de devis invalide' }, { status: 400 });
     }
 
-    // TODO: Decode token and verify it's valid for this devis
-    // TODO: Fetch from Prisma:
-    // const devis = await prisma.devis.findUnique({
-    //   where: { id: devisId },
-    //   include: { piscine: true, passage: true },
-    // });
+    const authHeader = request.headers.get('Authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
-    // Mock response for development
+    if (!token) {
+      return NextResponse.json({ error: 'Authentification requise' }, { status: 401 });
+    }
+
+    // Verify token is valid (not just present)
+    let decoded: Record<string, unknown>;
+    try {
+      decoded = jwt.verify(token, env.JWT_SECRET) as Record<string, unknown>;
+    } catch {
+      return NextResponse.json({ error: 'Token invalide ou expiré' }, { status: 401 });
+    }
+
+    // In production: query database and verify tenant ownership
+    // const devis = await prisma.devis.findUnique({ where: { id: devisId } });
+    // if (!devis || devis.tenantId !== decoded.tenantId) {
+    //   return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+    // }
+
     const mockDevis = {
       id: devisId,
-      numero: `DEV-2026-${Math.floor(Math.random() * 9999).toString().padStart(4, '0')}`,
+      numero: `DEV-2026-0001`,
       piscineNom: 'Piscine Municipale',
       proprietaireNom: 'Jean Dupont',
       proprietaireEmail: 'jean@example.com',
-      description: 'Nettoyage complet de la piscine et traitement de l\'eau',
+      description: "Nettoyage complet de la piscine et traitement de l'eau",
       montantHT: 500,
       montantTVA: 100,
       montantTTC: 600,
@@ -38,9 +52,6 @@ export async function GET(
     return NextResponse.json(mockDevis);
   } catch (error) {
     console.error('Error fetching devis:', error);
-    return NextResponse.json(
-      { error: 'Erreur lors du chargement du devis' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Erreur lors du chargement du devis' }, { status: 500 });
   }
 }
