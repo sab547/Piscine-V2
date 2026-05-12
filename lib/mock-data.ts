@@ -95,6 +95,33 @@ export const mockMissions = [
     piscineId: 'pool_003',
     datePrevu: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
   },
+  {
+    id: 'm4',
+    heure: '09:00',
+    client: 'Villa Fontaine',
+    adresse: '3 Allée des Roses, Grasse',
+    statut: StatutPassage.COMPLETE,
+    piscineId: 'pool_001',
+    datePrevu: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'm5',
+    heure: '14:00',
+    client: 'Résidence Les Pins',
+    adresse: '45 Av. des Fleurs, Antibes',
+    statut: StatutPassage.COMPLETE,
+    piscineId: 'pool_002',
+    datePrevu: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'm6',
+    heure: '10:30',
+    client: 'Villa Durand',
+    adresse: '8 Rte de la Corniche, Nice',
+    statut: StatutPassage.COMPLETE,
+    piscineId: 'pool_003',
+    datePrevu: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+  },
 ];
 
 export const mockNormes = {
