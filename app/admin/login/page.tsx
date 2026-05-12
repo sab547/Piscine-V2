@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
       localStorage.setItem('user-role', data.role);
       localStorage.setItem('user-name', data.userName);
 
-      router.push('/admin');
+      window.location.href = '/admin';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur de connexion');
     } finally {

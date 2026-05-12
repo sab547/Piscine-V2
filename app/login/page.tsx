@@ -35,9 +35,9 @@ export default function LoginPage() {
       localStorage.setItem('tenant-id', data.tenantId);
 
       if (data.role === 'pisciniste') {
-        router.push('/entreprise');
+        window.location.href = '/entreprise';
       } else {
-        router.push('/technicien/piscines');
+        window.location.href = '/technicien';
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur de connexion');

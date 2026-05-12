@@ -40,7 +40,7 @@ export default function TechnicienLoginPage() {
       localStorage.setItem('tenant-id', data.tenantId);
       localStorage.setItem('user-name', data.userName);
 
-      router.push('/technicien');
+      window.location.href = '/technicien';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur de connexion');
     } finally {
