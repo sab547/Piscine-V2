@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
-const JWT_SECRET = process.env.JWT_SECRET ||
-  (process.env.NODE_ENV !== 'production'
-    ? 'dev-only-secret-change-in-production-32chars!!'
-    : (() => { throw new Error('[Security] JWT_SECRET must be set in production'); })());
+// Edge Runtime compatible: use TextEncoder to get a Uint8Array secret
+const getSecret = () =>
+  new TextEncoder().encode(
+    process.env.JWT_SECRET || 'dev-only-secret-change-in-production-32chars!!'
+  );
 
-// Public routes - no authentication required
 const PUBLIC_PREFIXES = [
   '/api/v1/auth',
   '/portail',
@@ -21,42 +21,35 @@ const PUBLIC_PREFIXES = [
 
 function isPublicRoute(pathname: string): boolean {
   if (pathname === '/') return true;
-  return PUBLIC_PREFIXES.some(prefix => pathname.startsWith(prefix));
+  return PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
 function extractToken(request: NextRequest): string | null {
   const authHeader = request.headers.get('Authorization');
-  if (authHeader?.startsWith('Bearer ')) {
-    return authHeader.slice(7);
-  }
-  return request.cookies.get('auth-token')?.value || null;
+  if (authHeader?.startsWith('Bearer ')) return authHeader.slice(7);
+  return request.cookies.get('auth-token')?.value ?? null;
 }
 
-function verifyToken(token: string): Record<string, unknown> | null {
+async function verifyToken(token: string): Promise<Record<string, unknown> | null> {
   try {
-    return jwt.verify(token, JWT_SECRET) as Record<string, unknown>;
+    const { payload } = await jwtVerify(token, getSecret());
+    return payload as Record<string, unknown>;
   } catch {
     return null;
   }
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  if (isPublicRoute(pathname)) {
-    return NextResponse.next();
-  }
+  if (isPublicRoute(pathname)) return NextResponse.next();
 
   const token = extractToken(request);
 
-  // Admin routes — require valid 'admin' role token
   if (pathname.startsWith('/admin')) {
-    if (!token) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
-    }
+    if (!token) return NextResponse.redirect(new URL('/admin/login', request.url));
 
-    const decoded = verifyToken(token);
-
+    const decoded = await verifyToken(token);
     if (!decoded || decoded.role !== 'admin') {
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }
@@ -67,17 +60,11 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // Protected page routes — redirect to login if no token
   if (pathname.startsWith('/entreprise') || pathname.startsWith('/technicien')) {
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
+    if (!token) return NextResponse.redirect(new URL('/login', request.url));
 
-    const decoded = verifyToken(token);
-
-    if (!decoded) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
+    const decoded = await verifyToken(token);
+    if (!decoded) return NextResponse.redirect(new URL('/login', request.url));
 
     if (pathname.startsWith('/entreprise') && decoded.role !== 'pisciniste') {
       return NextResponse.redirect(new URL('/technicien', request.url));
@@ -93,14 +80,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Protected API routes — return 401 if token missing or invalid
   if (pathname.startsWith('/api')) {
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const decoded = verifyToken(token);
-
+    const decoded = await verifyToken(token);
     if (!decoded) {
       return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
     }
