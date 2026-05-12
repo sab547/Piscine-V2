@@ -48,12 +48,22 @@ export async function POST(request: NextRequest) {
       { expiresIn: '2h' }
     );
 
-    return NextResponse.json({
+    const res = NextResponse.json({
       token,
       role: 'admin',
       userName: ADMIN_NAME,
       message: "Connecté en tant qu'administrateur",
     });
+
+    res.cookies.set('auth-token', token, {
+      httpOnly: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 2 * 60 * 60,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    return res;
   } catch (error) {
     console.error('Admin login error:', error);
     return NextResponse.json({ error: 'Erreur lors de la connexion' }, { status: 500 });

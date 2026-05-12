@@ -43,6 +43,7 @@ export default function AdminDashboard() {
     localStorage.removeItem('auth-token');
     localStorage.removeItem('user-role');
     localStorage.removeItem('user-name');
+    document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
     router.push('/');
   };
 

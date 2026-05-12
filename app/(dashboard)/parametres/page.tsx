@@ -207,6 +207,8 @@ export default function ParametresPage() {
     localStorage.removeItem('user-role');
     localStorage.removeItem('tenant-id');
     localStorage.removeItem('user-name');
+    // Clear the auth cookie set by the login API
+    document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
     router.push('/');
   };
 

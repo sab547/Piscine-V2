@@ -77,13 +77,25 @@ export async function POST(request: NextRequest) {
       { expiresIn: '24h' }
     );
 
-    return NextResponse.json({
+    const res = NextResponse.json({
       success: true,
       token,
       role: user.role,
       tenantId: user.tenantId,
       userName: user.name,
     });
+
+    // Set cookie so middleware can authenticate page-route requests.
+    // Non-httpOnly so the client can clear it on logout.
+    res.cookies.set('auth-token', token, {
+      httpOnly: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 24 * 60 * 60,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    return res;
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json({ error: 'Erreur lors de la connexion' }, { status: 500 });

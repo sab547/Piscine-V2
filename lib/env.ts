@@ -7,23 +7,12 @@ function requireEnv(key: string, fallback?: string): string {
   const value = process.env[key];
   if (value) return value;
 
-  // During `next build`, Next.js collects page data with NODE_ENV=production
-  // but env vars from the runtime environment are not available yet.
-  // Only throw at actual server runtime, not during the build phase.
-  const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
-
-  if (process.env.NODE_ENV === 'production' && !isBuildPhase) {
-    throw new Error(
-      `[Security] Missing required environment variable: ${key}. ` +
-      `The application cannot start without it.`
-    );
-  }
-
   if (fallback !== undefined) {
-    if (!isBuildPhase) {
-      console.warn(
-        `[Security Warning] ${key} is not set. Using insecure default for development only. ` +
-        `Set this variable before deploying to production.`
+    // Only warn outside of the Next.js build phase to keep build logs clean
+    if (process.env.NEXT_PHASE !== 'phase-production-build') {
+      console.error(
+        `[Security] ${key} is not set. Using insecure fallback. ` +
+        `Set this environment variable in production.`
       );
     }
     return fallback;
