@@ -2,9 +2,20 @@
 
 import { User, Bell, Shield, LogOut, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { mockTechnicien } from '@/lib/mock-data';
 
 export default function ParametresPage() {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth-token');
+    localStorage.removeItem('user-role');
+    localStorage.removeItem('tenant-id');
+    localStorage.removeItem('user-name');
+    router.push('/');
+  };
+
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -137,7 +148,10 @@ export default function ParametresPage() {
       </div>
 
       {/* Logout */}
-      <button className="w-full bg-danger/10 hover:bg-danger/20 text-danger font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+      <button
+        onClick={handleLogout}
+        className="w-full bg-danger/10 hover:bg-danger/20 text-danger font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+      >
         <LogOut className="w-5 h-5" />
         Se déconnecter
       </button>

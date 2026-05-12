@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   Download,
   Calendar,
@@ -229,9 +230,12 @@ export default function PortalPage({ params: _params }: PortalPageProps) {
                   </div>
                 </div>
 
-                <button className="w-full bg-warning hover:bg-warning/90 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
+                <Link
+                  href={`/portail/${_params.token}/devis`}
+                  className="block w-full text-center bg-warning hover:bg-warning/90 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
+                >
                   Signer le devis
-                </button>
+                </Link>
               </div>
             ))}
           </section>

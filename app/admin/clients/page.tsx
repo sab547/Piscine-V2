@@ -2,9 +2,11 @@
 
 import { Search, MapPin, Droplets } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { mockProprietaire, mockPiscines } from '@/lib/mock-data';
 
 export default function AdminClientsPage() {
+  const router = useRouter();
   const [search, setSearch] = useState('');
 
   const clients = [
@@ -73,7 +75,12 @@ export default function AdminClientsPage() {
               </p>
             </div>
 
-            <button className="w-full btn-primary text-sm">Voir détails</button>
+            <button
+              onClick={() => router.push('/portail')}
+              className="w-full btn-primary text-sm"
+            >
+              Voir détails
+            </button>
           </div>
         ))}
       </div>

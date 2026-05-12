@@ -120,7 +120,7 @@ export default function EntreprisePage() {
 
         {/* Quick Links */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Link href="/entreprise/piscines" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
+          <Link href="/piscines" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gérer les Piscines</h3>
             <p className="text-gray-600 text-sm mb-4">Ajoutez, modifiez ou supprimez vos piscines</p>
             <div className="text-blue-600 font-semibold flex items-center gap-2">
@@ -128,7 +128,7 @@ export default function EntreprisePage() {
             </div>
           </Link>
 
-          <Link href="/entreprise/techniciens" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
+          <Link href="/admin/techniciens" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gérer les Techniciens</h3>
             <p className="text-gray-600 text-sm mb-4">Créez et gérez votre équipe de techniciens</p>
             <div className="text-blue-600 font-semibold flex items-center gap-2">
@@ -136,7 +136,7 @@ export default function EntreprisePage() {
             </div>
           </Link>
 
-          <Link href="/entreprise/clients" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
+          <Link href="/admin/clients" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Gérer les Clients</h3>
             <p className="text-gray-600 text-sm mb-4">Consultez la liste de vos propriétaires de piscine</p>
             <div className="text-blue-600 font-semibold flex items-center gap-2">
@@ -144,7 +144,7 @@ export default function EntreprisePage() {
             </div>
           </Link>
 
-          <Link href="/entreprise/parametres" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
+          <Link href="/parametres" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Paramètres Entreprise</h3>
             <p className="text-gray-600 text-sm mb-4">Mettez à jour vos informations d'entreprise</p>
             <div className="text-blue-600 font-semibold flex items-center gap-2">

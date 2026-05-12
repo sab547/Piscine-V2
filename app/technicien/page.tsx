@@ -85,7 +85,7 @@ export default function TechnicienPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Link href="/technicien/piscines" className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-4 cursor-pointer transition">
+          <Link href="/piscines" className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-4 cursor-pointer transition">
             <div className="flex items-center gap-3">
               <MapPin className="w-6 h-6" />
               <div>
@@ -95,7 +95,7 @@ export default function TechnicienPage() {
             </div>
           </Link>
 
-          <Link href="/technicien/planning" className="bg-green-600 hover:bg-green-700 text-white rounded-lg p-4 cursor-pointer transition">
+          <Link href="/planning" className="bg-green-600 hover:bg-green-700 text-white rounded-lg p-4 cursor-pointer transition">
             <div className="flex items-center gap-3">
               <Calendar className="w-6 h-6" />
               <div>
@@ -105,7 +105,7 @@ export default function TechnicienPage() {
             </div>
           </Link>
 
-          <Link href="/technicien/interventions" className="bg-purple-600 hover:bg-purple-700 text-white rounded-lg p-4 cursor-pointer transition">
+          <Link href="/rapports" className="bg-purple-600 hover:bg-purple-700 text-white rounded-lg p-4 cursor-pointer transition">
             <div className="flex items-center gap-3">
               <Clock className="w-6 h-6" />
               <div>
@@ -153,7 +153,7 @@ export default function TechnicienPage() {
                     </span>
                   </div>
                   <Link
-                    href={`/technicien/mission/${mission.id}`}
+                    href={`/passage/${mission.id}`}
                     className="text-blue-600 hover:underline text-sm font-semibold mt-3 inline-block"
                   >
                     Voir détails →

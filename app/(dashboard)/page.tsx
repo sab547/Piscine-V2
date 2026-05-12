@@ -2,11 +2,13 @@
 
 import { AlertCircle, Clock, MapPin, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { mockTechnicien, mockMissions, getStatusColor, getStatusLabel } from '@/lib/mock-data';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const today = new Date();
   const todayFormatted = format(today, 'EEEE d MMMM', { locale: fr });
   const missionsCount = mockMissions.length;
@@ -37,7 +39,10 @@ export default function DashboardPage() {
           <p className="text-xs text-warning/80 mt-1">
             Résidence Les Pins — pH en alerte
           </p>
-          <button className="text-xs font-semibold text-warning hover:text-warning/80 mt-2">
+          <button
+            onClick={() => router.push('/anomalies')}
+            className="text-xs font-semibold text-warning hover:text-warning/80 mt-2"
+          >
             Voir →
           </button>
         </div>

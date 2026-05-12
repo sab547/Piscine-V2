@@ -27,12 +27,15 @@ export default function PortailDashboard() {
   const [devis, setDevis] = useState<Devis[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [authToken, setAuthToken] = useState<string | null>(null);
 
   useEffect(() => {
     const token = typeof window !== 'undefined' ? document.cookie
       .split('; ')
       .find(row => row.startsWith('auth-token='))
       ?.split('=')[1] : null;
+
+    setAuthToken(token || null);
 
     if (!token) {
       router.push('/');
@@ -162,7 +165,10 @@ export default function PortailDashboard() {
                       </div>
                     )}
 
-                    <button className="mt-4 text-sm text-blue-600 hover:underline font-medium">
+                    <button
+                      onClick={() => router.push(`/passage/${passage.id}`)}
+                      className="mt-4 text-sm text-blue-600 hover:underline font-medium"
+                    >
                       Voir le rapport complet →
                     </button>
                   </div>
@@ -212,7 +218,10 @@ export default function PortailDashboard() {
                       </div>
 
                       {item.statut === 'ENVOYE' && (
-                        <button className="text-sm text-blue-600 hover:underline font-medium">
+                        <button
+                          onClick={() => router.push(authToken ? `/portail/${authToken}/devis` : '/portail')}
+                          className="text-sm text-blue-600 hover:underline font-medium"
+                        >
                           Signer le devis →
                         </button>
                       )}

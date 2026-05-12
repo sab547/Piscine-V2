@@ -1,6 +1,7 @@
 'use client';
 
 import { Clock } from 'lucide-react';
+import Link from 'next/link';
 import { mockTechnicien, mockMissions } from '@/lib/mock-data';
 
 export default function AdminTechniciensPage() {
@@ -64,8 +65,8 @@ export default function AdminTechniciensPage() {
 
             {/* Actions */}
             <div className="flex gap-2 pt-2 border-t border-border">
-              <button className="flex-1 btn-primary text-sm">Voir missions</button>
-              <button className="flex-1 btn-secondary text-sm">Éditer</button>
+              <Link href="/admin/interventions" className="flex-1 btn-primary text-sm text-center">Voir missions</Link>
+              <Link href="/admin/techniciens" className="flex-1 btn-secondary text-sm text-center">Éditer</Link>
             </div>
           </div>
         ))}

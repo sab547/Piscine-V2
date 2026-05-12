@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Users, Droplets, Wrench, LogOut, Settings, Eye, Lock } from 'lucide-react';
+import { Users, Droplets, Wrench, LogOut, Settings, Eye, Lock, ExternalLink } from 'lucide-react';
 
 interface Entity {
   id: string;
@@ -180,9 +180,12 @@ export default function AdminDashboard() {
                     }`}>
                       {entity.status === 'actif' ? 'Actif' : 'Inactif'}
                     </span>
-                    <button className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition">
+                    <Link
+                      href={entity.type === 'pisciniste' ? '/admin/clients' : entity.type === 'technicien' ? '/admin/techniciens' : '/admin/clients'}
+                      className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition"
+                    >
                       <Eye className="w-5 h-5" />
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -192,45 +195,45 @@ export default function AdminDashboard() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
+          <Link href="/admin/clients" className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200 hover:shadow-md transition-shadow cursor-pointer">
             <div className="flex items-start gap-4">
               <Users className="w-8 h-8 text-blue-600 flex-shrink-0 mt-1" />
               <div className="flex-1">
-                <h3 className="font-semibold text-blue-900">Gérer les Entreprises</h3>
+                <h3 className="font-semibold text-blue-900 flex items-center gap-2">Gérer les Entreprises <ExternalLink className="w-4 h-4" /></h3>
                 <p className="text-sm text-blue-700 mt-1">Créer, modifier ou supprimer les entreprises piscinistes</p>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
+          <Link href="/admin/techniciens" className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200 hover:shadow-md transition-shadow cursor-pointer">
             <div className="flex items-start gap-4">
               <Wrench className="w-8 h-8 text-green-600 flex-shrink-0 mt-1" />
               <div className="flex-1">
-                <h3 className="font-semibold text-green-900">Gérer les Techniciens</h3>
+                <h3 className="font-semibold text-green-900 flex items-center gap-2">Gérer les Techniciens <ExternalLink className="w-4 h-4" /></h3>
                 <p className="text-sm text-green-700 mt-1">Assigner des techniciens aux entreprises</p>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+          <Link href="/admin/clients" className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200 hover:shadow-md transition-shadow cursor-pointer">
             <div className="flex items-start gap-4">
               <Droplets className="w-8 h-8 text-purple-600 flex-shrink-0 mt-1" />
               <div className="flex-1">
-                <h3 className="font-semibold text-purple-900">Gérer les Propriétaires</h3>
+                <h3 className="font-semibold text-purple-900 flex items-center gap-2">Gérer les Propriétaires <ExternalLink className="w-4 h-4" /></h3>
                 <p className="text-sm text-purple-700 mt-1">Consulter les propriétaires de piscines</p>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-6 border border-indigo-200">
+          <Link href="/admin/cache" className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-6 border border-indigo-200 hover:shadow-md transition-shadow cursor-pointer">
             <div className="flex items-start gap-4">
               <Settings className="w-8 h-8 text-indigo-600 flex-shrink-0 mt-1" />
               <div className="flex-1">
-                <h3 className="font-semibold text-indigo-900">Paramètres Système</h3>
+                <h3 className="font-semibold text-indigo-900 flex items-center gap-2">Paramètres Système <ExternalLink className="w-4 h-4" /></h3>
                 <p className="text-sm text-indigo-700 mt-1">Configuration globale de la plateforme</p>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Security Notice */}

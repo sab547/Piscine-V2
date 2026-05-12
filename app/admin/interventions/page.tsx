@@ -2,9 +2,11 @@
 
 import { Calendar, MapPin, Filter } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { mockMissions, getStatusLabel, getStatusColor } from '@/lib/mock-data';
 
 export default function AdminInterventionsPage() {
+  const router = useRouter();
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
   const interventions = mockMissions.map((mission, i) => ({
@@ -76,7 +78,10 @@ export default function AdminInterventionsPage() {
               <p className="text-xs text-text-muted">Technicien: {intervention.technicien}</p>
             </div>
 
-            <button className="px-4 py-2 btn-secondary text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={() => router.push(`/passage/${intervention.id}`)}
+              className="px-4 py-2 btn-secondary text-sm opacity-0 group-hover:opacity-100 transition-opacity"
+            >
               Détails
             </button>
           </div>
