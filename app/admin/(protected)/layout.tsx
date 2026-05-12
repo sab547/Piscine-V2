@@ -1,68 +1,73 @@
 'use client';
 
-import { Home, Droplets, Users, UserCheck, ListChecks, Calendar, Settings, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Users, Droplets, ListChecks, BarChart3, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 
-const navItems = [
-  { href: '/entreprise', label: 'Tableau de bord', icon: Home, exact: true },
-  { href: '/piscines', label: 'Piscines', icon: Droplets },
-  { href: '/entreprise/techniciens', label: 'Techniciens', icon: Users },
-  { href: '/entreprise/clients', label: 'Clients', icon: UserCheck },
-  { href: '/entreprise/interventions', label: 'Interventions', icon: ListChecks },
-  { href: '/planning', label: 'Planning', icon: Calendar },
-  { href: '/parametres', label: 'Paramètres', icon: Settings },
+const adminNavItems = [
+  { href: '/admin', label: 'Dashboard', icon: BarChart3, exact: true },
+  { href: '/admin/clients', label: 'Clients', icon: Users },
+  { href: '/admin/techniciens', label: 'Techniciens', icon: Droplets },
+  { href: '/admin/interventions', label: 'Interventions', icon: ListChecks },
 ];
 
-const mobileNav = navItems.slice(0, 5);
-
-export default function EntrepriseLayout({ children }: { children: React.ReactNode }) {
+export default function AdminProtectedLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
 
   const handleLogout = () => {
     localStorage.removeItem('auth-token');
     localStorage.removeItem('user-role');
-    localStorage.removeItem('tenant-id');
     localStorage.removeItem('user-name');
     document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
     router.push('/');
   };
 
-  const isActive = (item: typeof navItems[0]) =>
+  const isActive = (item: typeof adminNavItems[0]) =>
     item.exact ? pathname === item.href : pathname.startsWith(item.href);
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-gradient-to-r from-primary to-aqua-600 text-white px-4 py-4 border-b border-primary/30 shadow-md">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
+      <div className="sticky top-0 z-40 bg-gradient-to-r from-primary to-primary-dark text-white px-4 py-3 border-b border-primary-dark">
+        <div className="flex items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold font-display">PoolTrack</h1>
-            <p className="text-xs text-white/70">Espace Entreprise</p>
+            <p className="text-xs text-white/70">Espace Administrateur</p>
           </div>
+
           <div className="flex items-center gap-2">
-            <button onClick={() => router.back()} title="Page précédente" className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
+            {/* History navigation */}
+            <button
+              onClick={() => router.back()}
+              title="Page précédente"
+              className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+            >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <button onClick={() => window.history.forward()} title="Page suivante" className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
+            <button
+              onClick={() => window.history.forward()}
+              title="Page suivante"
+              className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+            >
               <ChevronRight className="w-4 h-4" />
             </button>
+
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-white font-semibold text-sm ml-1"
+              className="flex items-center gap-2 px-3 py-2 bg-danger hover:bg-red-700 rounded-lg transition-colors font-semibold text-sm ml-1"
             >
               <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Déconnexion</span>
+              <span className="hidden sm:inline">Quitter</span>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="flex max-w-7xl mx-auto">
-        {/* Sidebar — desktop only */}
-        <nav className="hidden md:flex w-60 bg-surface border-r border-border flex-col p-4 gap-1 min-h-screen sticky top-16 shrink-0">
-          {navItems.map((item) => {
+      <div className="flex">
+        {/* Sidebar — desktop */}
+        <nav className="hidden md:flex w-60 bg-surface border-r border-border flex-col p-4 gap-1 min-h-screen sticky top-16">
+          {adminNavItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item);
             return (
@@ -86,9 +91,9 @@ export default function EntrepriseLayout({ children }: { children: React.ReactNo
         </main>
       </div>
 
-      {/* Mobile bottom nav */}
+      {/* Mobile bottom nav — only within admin space */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-border flex z-40 safe-area">
-        {mobileNav.map((item) => {
+        {adminNavItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item);
           return (
@@ -100,7 +105,7 @@ export default function EntrepriseLayout({ children }: { children: React.ReactNo
               }`}
             >
               <Icon className="w-5 h-5" />
-              <span className="text-[10px] font-semibold leading-none">{item.label.split(' ')[0]}</span>
+              <span className="text-[10px] font-semibold">{item.label}</span>
             </Link>
           );
         })}

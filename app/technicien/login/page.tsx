@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LogIn, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Wrench, LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
 
 export default function TechnicienLoginPage() {
   const router = useRouter();
@@ -11,14 +11,6 @@ export default function TechnicienLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Check if user came from valid code entry
-    const accessToken = localStorage.getItem('tech-access-token');
-    if (!accessToken) {
-      router.push('/technicien/acces');
-    }
-  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,19 +31,15 @@ export default function TechnicienLoginPage() {
 
       const data = await response.json();
 
-      // Verify user is a technician
       if (!['technicien', 'pisciniste'].includes(data.role)) {
         throw new Error('Accès non autorisé pour cet utilisateur');
       }
 
-      // Store authentication data
       localStorage.setItem('auth-token', data.token);
       localStorage.setItem('user-role', data.role);
       localStorage.setItem('tenant-id', data.tenantId);
       localStorage.setItem('user-name', data.userName);
-      localStorage.removeItem('tech-access-token');
 
-      // Redirect to technician dashboard
       router.push('/technicien');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur de connexion');
@@ -61,82 +49,103 @@ export default function TechnicienLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center px-4">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="bg-green-100 p-4 rounded-full">
-              <LogIn className="w-8 h-8 text-green-600" />
+    <main className="relative min-h-screen overflow-hidden bg-aqua-aurora flex items-center justify-center px-4 py-12">
+      <div aria-hidden className="pointer-events-none absolute -top-40 -right-32 w-[36rem] h-[36rem] rounded-full bg-aqua-200/40 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-40 -left-32 w-[32rem] h-[32rem] rounded-full bg-lagoon-light/40 blur-3xl" />
+
+      <Link
+        href="/"
+        className="absolute top-6 left-6 inline-flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Accueil
+      </Link>
+
+      <div className="relative w-full max-w-md card-glass !p-8 space-y-7">
+        <div className="text-center space-y-4">
+          <div className="relative inline-flex items-center justify-center">
+            <div aria-hidden className="absolute -inset-3 rounded-full bg-gradient-lagoon opacity-25 blur-xl" />
+            <div className="relative w-14 h-14 rounded-2xl bg-gradient-lagoon text-white inline-flex items-center justify-center shadow-ocean-lg">
+              <Wrench className="w-7 h-7" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-green-600 mb-2">Connexion Technicien</h1>
-          <p className="text-gray-600">Entrez vos identifiants</p>
+          <div>
+            <p className="eyebrow">Sur le terrain</p>
+            <h1 className="text-3xl font-display font-bold tracking-tight mt-1">
+              <span className="bg-gradient-to-r from-abyss via-primary to-aqua-500 bg-clip-text text-transparent">Espace Technicien</span>
+            </h1>
+            <p className="mt-1 text-sm text-text-secondary">Connectez-vous avec vos identifiants</p>
+          </div>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm flex items-start gap-2">
-            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2 p-3.5 rounded-md bg-danger-light text-danger text-sm">
+            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-xs font-bold tracking-wider uppercase text-text-secondary mb-1.5">
               Email
             </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="vous@example.com"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              required
-              disabled={loading}
-            />
+            <div className="input-wrap">
+              <Mail className="input-icon w-5 h-5" />
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="vous@email.com"
+                className="input-base"
+                required
+                disabled={loading}
+              />
+            </div>
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="password" className="block text-xs font-bold tracking-wider uppercase text-text-secondary mb-1.5">
               Mot de passe
             </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              required
-              disabled={loading}
-            />
+            <div className="input-wrap">
+              <Lock className="input-icon w-5 h-5" />
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="input-base"
+                required
+                disabled={loading}
+              />
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={loading || !email || !password}
-            className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-2 rounded-lg transition"
+            className="btn-primary w-full"
           >
-            {loading ? 'Connexion...' : 'Se connecter'}
+            <LogIn className="w-4 h-4" />
+            {loading ? 'Connexion en cours…' : 'Se connecter'}
           </button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-center text-sm text-gray-600">
-            Pas de compte?
-          </p>
-          <p className="text-center text-xs text-gray-500 mt-2">
-            Contactez votre pisciniste pour créer un compte
+        <div className="pt-5 border-t border-white/60 text-center">
+          <p className="text-xs text-text-muted">
+            Pas encore de compte ? Contactez votre pisciniste.
           </p>
         </div>
 
-        <div className="mt-6 text-center">
-          <Link href="/technicien/acces" className="text-blue-600 hover:underline text-sm">
-            ← Retour à l'accès
-          </Link>
-        </div>
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="pt-2 text-center text-xs text-text-muted">
+            Dev : <code className="font-mono px-2 py-0.5 rounded bg-aqua-50 text-aqua-700">technicien@example.com / password123</code>
+          </div>
+        )}
       </div>
-    </div>
+    </main>
   );
 }

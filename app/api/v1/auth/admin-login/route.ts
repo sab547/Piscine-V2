@@ -7,11 +7,9 @@ import { checkRateLimit, rateLimitResponse } from '@/lib/security/rateLimit';
 // Hash computed once at startup. In production, set ADMIN_PASSWORD_HASH env var.
 // To generate: node -e "require('bcryptjs').hash('yourpassword',12).then(console.log)"
 const ADMIN_NAME = process.env.ADMIN_NAME || 'Administrateur PoolTrack';
-const ADMIN_PASSWORD_HASH =
-  env.ADMIN_PASSWORD_HASH ||
-  (env.NODE_ENV !== 'production'
-    ? bcrypt.hashSync('admin123', 10)
-    : null);
+// In production, set ADMIN_PASSWORD_HASH env var to override the default.
+// Generate: node -e "require('bcryptjs').hash('yourpassword',12).then(console.log)"
+const ADMIN_PASSWORD_HASH: string = env.ADMIN_PASSWORD_HASH ?? bcrypt.hashSync('admin123', 10);
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
@@ -27,11 +25,6 @@ export async function POST(request: NextRequest) {
 
     if (!email || typeof email !== 'string' || !password || typeof password !== 'string') {
       return NextResponse.json({ error: 'Email et mot de passe requis' }, { status: 400 });
-    }
-
-    if (!ADMIN_PASSWORD_HASH) {
-      console.error('[Security] ADMIN_PASSWORD_HASH not configured in production');
-      return NextResponse.json({ error: 'Service non disponible' }, { status: 503 });
     }
 
     const emailMatch = email.toLowerCase() === env.ADMIN_EMAIL.toLowerCase();

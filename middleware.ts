@@ -13,7 +13,6 @@ const PUBLIC_PREFIXES = [
   '/tarifs',
   '/login',
   '/admin/login',
-  '/technicien/acces',
   '/technicien/login',
   '/_next',
   '/favicon',
