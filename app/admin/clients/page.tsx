@@ -21,7 +21,7 @@ const allClients: Client[] = [
     id: mockProprietaire.id,
     nom: `${mockProprietaire.prenom} ${mockProprietaire.nom}`,
     email: mockProprietaire.email,
-    telephone: mockProprietaire.telephone,
+    telephone: mockProprietaire.telephone ?? '',
     ville: "Côte d'Azur",
     piscines: mockPiscines.length,
     derniereIntervention: '2026-05-06',
