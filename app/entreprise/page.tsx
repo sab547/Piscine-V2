@@ -3,154 +3,122 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Users, Droplet, FileText, AlertCircle, LogOut } from 'lucide-react';
-
-interface Stats {
-  poolCount: number;
-  technicianCount: number;
-  interventionCount: number;
-  alertCount: number;
-}
+import { Droplets, Users, UserCheck, ListChecks, Calendar, FileText, TrendingUp, AlertTriangle } from 'lucide-react';
+import { mockMissions } from '@/lib/mock-data';
+import { StatutPassage } from '@/types';
 
 export default function EntreprisePage() {
   const router = useRouter();
   const [userName, setUserName] = useState('');
-  const [stats, setStats] = useState<Stats>({
-    poolCount: 12,
-    technicianCount: 3,
-    interventionCount: 24,
-    alertCount: 2,
-  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check authentication
     const token = localStorage.getItem('auth-token');
-    const userRole = localStorage.getItem('user-role');
+    const role = localStorage.getItem('user-role');
     const name = localStorage.getItem('user-name');
-
-    if (!token || userRole !== 'pisciniste') {
-      router.push('/login');
-      return;
-    }
-
-    setUserName(name || 'Pisciniste');
+    if (!token || role !== 'pisciniste') { router.push('/login'); return; }
+    setUserName(name || 'Entreprise');
     setLoading(false);
   }, [router]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('auth-token');
-    localStorage.removeItem('user-role');
-    localStorage.removeItem('tenant-id');
-    localStorage.removeItem('user-name');
-    router.push('/');
-  };
+  if (loading) return (
+    <div className="flex items-center justify-center py-24">
+      <div className="w-10 h-10 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+    </div>
+  );
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  const enCours = mockMissions.filter(m => m.statut === StatutPassage.EN_COURS).length;
+  const planifie = mockMissions.filter(m => m.statut === StatutPassage.PLANIFIE).length;
+  const termine = mockMissions.filter(m => m.statut === StatutPassage.COMPLETE).length;
+
+  const stats = [
+    { label: 'Piscines gérées', value: 12, icon: Droplets, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Techniciens actifs', value: 3, icon: Users, color: 'text-success', bg: 'bg-success/10' },
+    { label: 'Missions en cours', value: enCours, icon: TrendingUp, color: 'text-warning', bg: 'bg-warning/10' },
+    { label: 'Alertes ouvertes', value: 2, icon: AlertTriangle, color: 'text-danger', bg: 'bg-danger/10' },
+  ];
+
+  const quickLinks = [
+    { href: '/piscines', label: 'Piscines', desc: 'Gérer vos piscines et équipements', icon: Droplets, color: 'bg-primary' },
+    { href: '/entreprise/techniciens', label: 'Techniciens', desc: 'Équipe, codes d\'accès et missions', icon: Users, color: 'bg-success' },
+    { href: '/entreprise/clients', label: 'Clients', desc: 'Propriétaires et portails', icon: UserCheck, color: 'bg-aqua-600' },
+    { href: '/entreprise/interventions', label: 'Interventions', desc: 'Suivi de tous les passages', icon: ListChecks, color: 'bg-warning' },
+    { href: '/planning', label: 'Planning', desc: 'Calendrier des interventions', icon: Calendar, color: 'bg-lagoon' },
+    { href: '/rapports', label: 'Rapports', desc: 'Télécharger les rapports PDF', icon: FileText, color: 'bg-abyss' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Tableau de Bord</h1>
-            <p className="text-gray-600 mt-1">Bienvenue, {userName}</p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition"
-          >
-            <LogOut className="w-5 h-5" />
-            Déconnexion
-          </button>
+    <div className="space-y-6">
+      {/* Welcome */}
+      <div>
+        <h1 className="text-2xl font-bold font-display text-text">Tableau de bord</h1>
+        <p className="text-text-muted text-sm mt-1">Bienvenue, {userName}</p>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {stats.map((s) => {
+          const Icon = s.icon;
+          return (
+            <div key={s.label} className="card flex items-center gap-3 !p-4">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${s.bg}`}>
+                <Icon className={`w-5 h-5 ${s.color}`} />
+              </div>
+              <div>
+                <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+                <p className="text-xs text-text-muted leading-tight">{s.label}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Quick links */}
+      <div>
+        <h2 className="text-sm font-bold uppercase tracking-wider text-text-muted mb-3">Gestion</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {quickLinks.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link key={link.href} href={link.href} className="card hover:border-primary transition-all group !p-4 flex items-start gap-4">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${link.color} text-white group-hover:scale-105 transition-transform`}>
+                  <Icon className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-text">{link.label}</p>
+                  <p className="text-xs text-text-muted mt-0.5 leading-snug">{link.desc}</p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Piscines</p>
-                <p className="text-3xl font-bold text-blue-600 mt-2">{stats.poolCount}</p>
-              </div>
-              <Droplet className="w-12 h-12 text-blue-100" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Techniciens</p>
-                <p className="text-3xl font-bold text-green-600 mt-2">{stats.technicianCount}</p>
-              </div>
-              <Users className="w-12 h-12 text-green-100" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Interventions</p>
-                <p className="text-3xl font-bold text-purple-600 mt-2">{stats.interventionCount}</p>
-              </div>
-              <FileText className="w-12 h-12 text-purple-100" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Alertes</p>
-                <p className="text-3xl font-bold text-red-600 mt-2">{stats.alertCount}</p>
-              </div>
-              <AlertCircle className="w-12 h-12 text-red-100" />
-            </div>
-          </div>
+      {/* Today's missions */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-text-muted">Missions du jour</h2>
+          <Link href="/entreprise/interventions" className="text-xs text-primary font-semibold hover:underline">
+            Voir tout →
+          </Link>
         </div>
-
-        {/* Quick Links */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Link href="/piscines" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gérer les Piscines</h3>
-            <p className="text-gray-600 text-sm mb-4">Ajoutez, modifiez ou supprimez vos piscines</p>
-            <div className="text-blue-600 font-semibold flex items-center gap-2">
-              Accéder <span>→</span>
+        <div className="space-y-2">
+          {mockMissions.slice(0, 3).map((m) => (
+            <div key={m.id} className="card !p-3 flex items-center justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm text-text truncate">{m.client}</p>
+                <p className="text-xs text-text-muted">{m.heure} · {m.adresse}</p>
+              </div>
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full shrink-0 ${
+                m.statut === StatutPassage.COMPLETE ? 'bg-success/15 text-success' :
+                m.statut === StatutPassage.EN_COURS ? 'bg-warning/15 text-warning' :
+                'bg-border text-text-muted'
+              }`}>
+                {m.statut === StatutPassage.COMPLETE ? 'Terminé' :
+                 m.statut === StatutPassage.EN_COURS ? 'En cours' : 'Prévu'}
+              </span>
             </div>
-          </Link>
-
-          <Link href="/admin/techniciens" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gérer les Techniciens</h3>
-            <p className="text-gray-600 text-sm mb-4">Créez et gérez votre équipe de techniciens</p>
-            <div className="text-blue-600 font-semibold flex items-center gap-2">
-              Accéder <span>→</span>
-            </div>
-          </Link>
-
-          <Link href="/admin/clients" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Gérer les Clients</h3>
-            <p className="text-gray-600 text-sm mb-4">Consultez la liste de vos propriétaires de piscine</p>
-            <div className="text-blue-600 font-semibold flex items-center gap-2">
-              Accéder <span>→</span>
-            </div>
-          </Link>
-
-          <Link href="/parametres" className="bg-white rounded-lg shadow hover:shadow-lg transition p-6 cursor-pointer">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Paramètres Entreprise</h3>
-            <p className="text-gray-600 text-sm mb-4">Mettez à jour vos informations d'entreprise</p>
-            <div className="text-blue-600 font-semibold flex items-center gap-2">
-              Accéder <span>→</span>
-            </div>
-          </Link>
+          ))}
         </div>
       </div>
     </div>
