@@ -32,7 +32,15 @@ const mockUsers = [
     passwordHash: MOCK_PASSWORD_HASH,
     role: 'technicien',
     tenantId: 'tenant_1',
-    name: 'Pierre Martin',
+    name: 'Karim Benali',
+  },
+  {
+    id: 'user_3',
+    email: 'lucas.moreau@pooltrack.fr',
+    passwordHash: MOCK_PASSWORD_HASH,
+    role: 'technicien',
+    tenantId: 'tenant_1',
+    name: 'Lucas Moreau',
   },
 ];
 
