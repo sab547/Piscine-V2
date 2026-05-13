@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Droplets, Users, UserCheck, ListChecks, Calendar, FileText, TrendingUp, AlertTriangle } from 'lucide-react';
-import { mockMissions } from '@/lib/mock-data';
+import { mockMissions, mockPiscines, mockAllTechniciens } from '@/lib/mock-data';
 import { StatutPassage } from '@/types';
 
 export default function EntreprisePage() {
@@ -32,8 +32,8 @@ export default function EntreprisePage() {
   const termine = mockMissions.filter(m => m.statut === StatutPassage.COMPLETE).length;
 
   const stats = [
-    { label: 'Piscines gérées', value: 12, icon: Droplets, color: 'text-primary', bg: 'bg-primary/10', href: '/piscines' },
-    { label: 'Techniciens actifs', value: 3, icon: Users, color: 'text-success', bg: 'bg-success/10', href: '/entreprise/techniciens' },
+    { label: 'Piscines gérées', value: mockPiscines.length, icon: Droplets, color: 'text-primary', bg: 'bg-primary/10', href: '/piscines' },
+    { label: 'Techniciens actifs', value: mockAllTechniciens.length, icon: Users, color: 'text-success', bg: 'bg-success/10', href: '/entreprise/techniciens' },
     { label: 'Missions en cours', value: enCours, icon: TrendingUp, color: 'text-warning', bg: 'bg-warning/10', href: '/entreprise/interventions' },
     { label: 'Alertes ouvertes', value: 2, icon: AlertTriangle, color: 'text-danger', bg: 'bg-danger/10', href: '/entreprise/interventions' },
   ];

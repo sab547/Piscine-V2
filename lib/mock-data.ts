@@ -5,7 +5,7 @@ export const mockTechnicien = {
   nom: 'Benali',
   prenom: 'Karim',
   role: Role.TECHNICIEN,
-  email: 'karim@pooltrack.fr',
+  email: 'technicien@example.com',
 };
 
 export const mockProprietaire: Proprietaire = {
@@ -98,7 +98,7 @@ export const mockMissions = [
   {
     id: 'm4',
     heure: '09:00',
-    client: 'Villa Fontaine',
+    client: 'Villa Martinez',
     adresse: '3 Allée des Roses, Grasse',
     statut: StatutPassage.COMPLETE,
     piscineId: 'pool_001',

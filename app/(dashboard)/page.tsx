@@ -4,6 +4,7 @@ import { AlertCircle, Clock, MapPin, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { mockTechnicien, mockMissions, getStatusColor, getStatusLabel } from '@/lib/mock-data';
+import { StatutPassage } from '@/types';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
@@ -99,9 +100,9 @@ export default function DashboardPage() {
         </h2>
 
         <div className="grid grid-cols-3 gap-3">
-          <StatCard label="Passages" value="7" icon="✓" />
-          <StatCard label="Rapports" value="7" icon="📄" />
-          <StatCard label="Contrats" value="12" icon="🤝" />
+          <StatCard label="Terminés" value={String(mockMissions.filter(m => m.statut === StatutPassage.COMPLETE).length)} icon="✓" />
+          <StatCard label="Planifiés" value={String(mockMissions.filter(m => m.statut === StatutPassage.PLANIFIE).length)} icon="📅" />
+          <StatCard label="En cours" value={String(mockMissions.filter(m => m.statut === StatutPassage.EN_COURS).length)} icon="⚡" />
         </div>
       </div>
     </div>
