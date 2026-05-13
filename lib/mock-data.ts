@@ -160,6 +160,44 @@ export const getStatusLabel = (statut: StatutPassage) => {
   }
 };
 
+// Admin platform data — entreprises (tenants) and their techniciens
+export const mockEntreprises = [
+  {
+    id: 'tenant_1',
+    nom: 'Jean Dupont Piscines',
+    email: 'pisciniste@example.com',
+    ville: 'Nice',
+    statut: 'actif' as const,
+    nbTechniciens: 2,
+    nbPiscines: 3,
+    nbInterventions: 6,
+    createdAt: '2025-01-15',
+  },
+];
+
+export const mockAllTechniciens = [
+  {
+    id: 'tech_001',
+    prenom: 'Karim',
+    nom: 'Benali',
+    email: 'technicien@example.com',
+    entreprise: 'Jean Dupont Piscines',
+    statut: 'actif' as const,
+    derniereActivite: '2026-05-12 08:30',
+    missions: 1,
+  },
+  {
+    id: 'tech_002',
+    prenom: 'Lucas',
+    nom: 'Moreau',
+    email: 'lucas.moreau@pooltrack.fr',
+    entreprise: 'Jean Dupont Piscines',
+    statut: 'actif' as const,
+    derniereActivite: '2026-05-11 14:00',
+    missions: 1,
+  },
+];
+
 // Portal data
 export const mockPortalPassages = [
   {

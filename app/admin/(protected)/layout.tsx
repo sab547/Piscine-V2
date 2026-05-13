@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 
 const adminNavItems = [
   { href: '/admin', label: 'Dashboard', icon: BarChart3, exact: true },
-  { href: '/admin/clients', label: 'Clients', icon: Users },
+  { href: '/admin/clients', label: 'Entreprises', icon: Users },
   { href: '/admin/techniciens', label: 'Techniciens', icon: Droplets },
   { href: '/admin/interventions', label: 'Interventions', icon: ListChecks },
 ];

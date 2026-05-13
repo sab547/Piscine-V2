@@ -1,49 +1,36 @@
 'use client';
 
-import { Clock } from 'lucide-react';
+import { Clock, Users } from 'lucide-react';
 import Link from 'next/link';
-import { mockTechnicien, mockMissions } from '@/lib/mock-data';
+import { mockAllTechniciens } from '@/lib/mock-data';
 
 export default function AdminTechniciensPage() {
-  const techniciens = [
-    {
-      id: mockTechnicien.id,
-      nom: `${mockTechnicien.prenom} ${mockTechnicien.nom}`,
-      email: mockTechnicien.email,
-      missions: mockMissions.filter((m) => m.statut === 'EN_COURS').length,
-      statut: 'actif',
-      derniereActivite: '2026-05-08 13:45',
-    },
-  ];
+  const actifs = mockAllTechniciens.filter(t => t.statut === 'actif').length;
+  const totalMissions = mockAllTechniciens.reduce((s, t) => s + t.missions, 0);
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="section-title">Gestion des techniciens</h2>
+        <h2 className="section-title">Tous les techniciens</h2>
+        <p className="text-sm text-text-muted mt-1">{mockAllTechniciens.length} technicien{mockAllTechniciens.length > 1 ? 's' : ''} sur la plateforme</p>
       </div>
 
-      {/* Techniciens Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {techniciens.map((tech) => (
+        {mockAllTechniciens.map((tech) => (
           <div key={tech.id} className="card space-y-4">
-            {/* Header */}
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="font-bold text-text text-lg">{tech.nom}</h3>
+                <h3 className="font-bold text-text">{tech.prenom} {tech.nom}</h3>
                 <p className="text-xs text-text-muted">{tech.email}</p>
+                <p className="text-xs text-primary font-medium mt-0.5">{tech.entreprise}</p>
               </div>
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                  tech.statut === 'actif'
-                    ? 'bg-success/20 text-success'
-                    : 'bg-warning/20 text-warning'
-                }`}
-              >
-                {tech.statut === 'actif' ? 'Actif' : 'Inactif'}
+              <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                tech.statut === 'actif' ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning'
+              }`}>
+                {tech.statut}
               </span>
             </div>
 
-            {/* Stats */}
             <div className="grid grid-cols-2 gap-2">
               <div className="bg-surface rounded-lg p-3 text-center">
                 <p className="text-2xl font-bold text-primary">{tech.missions}</p>
@@ -55,33 +42,32 @@ export default function AdminTechniciensPage() {
               </div>
             </div>
 
-            {/* Activity */}
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2 text-text-muted">
-                <Clock className="w-4 h-4" />
-                {tech.derniereActivite}
-              </div>
+            <div className="flex items-center gap-2 text-xs text-text-muted">
+              <Clock className="w-3.5 h-3.5" />
+              {tech.derniereActivite}
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-2 pt-2 border-t border-border">
-              <Link href="/admin/interventions" className="flex-1 btn-primary text-sm text-center">Voir missions</Link>
-              <Link href="/admin/techniciens" className="flex-1 btn-secondary text-sm text-center">Éditer</Link>
+            <div className="pt-2 border-t border-border">
+              <Link href="/admin/interventions" className="w-full btn-primary text-sm text-center block">
+                Voir missions
+              </Link>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Summary Stats */}
       <div className="card">
-        <h3 className="font-bold text-lg text-text font-display mb-4">Résumé des performances</h3>
-        <div className="grid md:grid-cols-3 gap-4">
+        <h3 className="font-bold text-lg text-text font-display mb-4 flex items-center gap-2">
+          <Users className="w-5 h-5 text-primary" />
+          Résumé plateforme
+        </h3>
+        <div className="grid grid-cols-3 gap-4">
           <div className="text-center p-4 bg-surface rounded-lg">
-            <p className="text-3xl font-bold text-primary">{techniciens.length}</p>
+            <p className="text-3xl font-bold text-primary">{actifs}</p>
             <p className="text-xs text-text-muted mt-2">Techniciens actifs</p>
           </div>
           <div className="text-center p-4 bg-surface rounded-lg">
-            <p className="text-3xl font-bold text-success">{techniciens.reduce((a, b) => a + b.missions, 0)}</p>
+            <p className="text-3xl font-bold text-success">{totalMissions}</p>
             <p className="text-xs text-text-muted mt-2">Missions en cours</p>
           </div>
           <div className="text-center p-4 bg-surface rounded-lg">

@@ -2,19 +2,25 @@
 
 import Link from 'next/link';
 import { Users, Droplets, Wrench, ListChecks, Settings, TrendingUp, ShieldCheck } from 'lucide-react';
+import { mockEntreprises, mockAllTechniciens, mockMissions, mockPiscines } from '@/lib/mock-data';
+
+const nbEntreprises = mockEntreprises.length;
+const nbTechniciens = mockAllTechniciens.length;
+const nbInterventions = mockMissions.length;
+const nbPiscines = mockPiscines.length;
 
 const stats = [
-  { label: 'Entreprises', value: 8, icon: Users, color: 'text-primary', bg: 'bg-primary/10', href: '/admin/clients' },
-  { label: 'Techniciens', value: 21, icon: Wrench, color: 'text-success', bg: 'bg-success/10', href: '/admin/techniciens' },
-  { label: 'Interventions', value: 134, icon: ListChecks, color: 'text-warning', bg: 'bg-warning/10', href: '/admin/interventions' },
-  { label: 'Piscines gérées', value: 87, icon: Droplets, color: 'text-aqua-600', bg: 'bg-aqua-50', href: '/admin/clients' },
+  { label: 'Entreprises', value: nbEntreprises, icon: Users, color: 'text-primary', bg: 'bg-primary/10', href: '/admin/clients' },
+  { label: 'Techniciens', value: nbTechniciens, icon: Wrench, color: 'text-success', bg: 'bg-success/10', href: '/admin/techniciens' },
+  { label: 'Interventions', value: nbInterventions, icon: ListChecks, color: 'text-warning', bg: 'bg-warning/10', href: '/admin/interventions' },
+  { label: 'Piscines gérées', value: nbPiscines, icon: Droplets, color: 'text-aqua-600', bg: 'bg-aqua-50', href: '/admin/clients' },
 ];
 
 const sections = [
   {
     href: '/admin/clients',
-    label: 'Entreprises & Clients',
-    desc: 'Gérer les comptes piscinistes et leurs propriétaires',
+    label: 'Entreprises',
+    desc: 'Gérer les comptes piscinistes abonnés à la plateforme',
     icon: Users,
     color: 'bg-primary',
   },
@@ -44,7 +50,6 @@ const sections = [
 export default function AdminDashboard() {
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-abyss text-white flex items-center justify-center shrink-0">
           <ShieldCheck className="w-5 h-5" />
@@ -55,7 +60,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((s) => {
           const Icon = s.icon;
@@ -77,7 +81,6 @@ export default function AdminDashboard() {
         })}
       </div>
 
-      {/* Sections */}
       <div>
         <h2 className="text-sm font-bold uppercase tracking-wider text-text-muted mb-3">Gestion</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -102,7 +105,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Platform notice */}
       <div className="flex items-start gap-3 p-4 rounded-xl bg-abyss/5 border border-abyss/10">
         <TrendingUp className="w-5 h-5 text-abyss shrink-0 mt-0.5" />
         <div className="text-sm">
