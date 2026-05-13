@@ -13,7 +13,7 @@ const stats = [
   { label: 'Entreprises', value: nbEntreprises, icon: Users, color: 'text-primary', bg: 'bg-primary/10', href: '/admin/clients' },
   { label: 'Techniciens', value: nbTechniciens, icon: Wrench, color: 'text-success', bg: 'bg-success/10', href: '/admin/techniciens' },
   { label: 'Interventions', value: nbInterventions, icon: ListChecks, color: 'text-warning', bg: 'bg-warning/10', href: '/admin/interventions' },
-  { label: 'Piscines gérées', value: nbPiscines, icon: Droplets, color: 'text-aqua-600', bg: 'bg-aqua-50', href: '/admin/clients' },
+  { label: 'Piscines gérées', value: nbPiscines, icon: Droplets, color: 'text-aqua-600', bg: 'bg-aqua-50', href: '/admin/piscines' },
 ];
 
 const sections = [
@@ -30,6 +30,13 @@ const sections = [
     desc: 'Superviser les techniciens de toutes les entreprises',
     icon: Wrench,
     color: 'bg-success',
+  },
+  {
+    href: '/admin/piscines',
+    label: 'Piscines',
+    desc: 'Toutes les piscines enregistrées sur la plateforme',
+    icon: Droplets,
+    color: 'bg-aqua-600',
   },
   {
     href: '/admin/interventions',

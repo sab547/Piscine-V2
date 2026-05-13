@@ -1,13 +1,14 @@
 'use client';
 
-import { Users, Droplets, ListChecks, BarChart3, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Users, Droplets, ListChecks, BarChart3, LogOut, ChevronLeft, ChevronRight, Wrench } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 
 const adminNavItems = [
   { href: '/admin', label: 'Dashboard', icon: BarChart3, exact: true },
   { href: '/admin/clients', label: 'Entreprises', icon: Users },
-  { href: '/admin/techniciens', label: 'Techniciens', icon: Droplets },
+  { href: '/admin/techniciens', label: 'Techniciens', icon: Wrench },
+  { href: '/admin/piscines', label: 'Piscines', icon: Droplets },
   { href: '/admin/interventions', label: 'Interventions', icon: ListChecks },
 ];
 

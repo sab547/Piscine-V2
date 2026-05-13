@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Clock, Users, X, Eye, EyeOff, Copy, CheckCircle2, AlertCircle, KeyRound, RefreshCw } from 'lucide-react';
+import { Clock, Users, X, Eye, EyeOff, Copy, CheckCircle2, AlertCircle, KeyRound, RefreshCw, Plus } from 'lucide-react';
 import Link from 'next/link';
-import { mockAllTechniciens } from '@/lib/mock-data';
+import { mockAllTechniciens, mockEntreprises } from '@/lib/mock-data';
 
 type Tech = typeof mockAllTechniciens[0] & { password: string };
 
@@ -145,16 +145,103 @@ function CredentialsModal({ tech, onClose, onResetPassword }: {
   );
 }
 
+function AddTechModal({ onClose, onSave }: {
+  onClose: () => void;
+  onSave: (t: Omit<Tech, 'id' | 'statut' | 'missions' | 'derniereActivite'>) => void;
+}) {
+  const [prenom, setPrenom] = useState('');
+  const [nom, setNom] = useState('');
+  const [email, setEmail] = useState('');
+  const [entreprise, setEntreprise] = useState(mockEntreprises[0]?.nom ?? '');
+  const [password, setPassword] = useState(generatePassword());
+  const [showPwd, setShowPwd] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave({ prenom, nom, email, entreprise, password });
+    setSaved(true);
+    setTimeout(onClose, 1000);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full sm:max-w-md bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-bold text-lg text-text font-display">Nouveau technicien</h2>
+          <button onClick={onClose} className="p-1.5 hover:bg-surface rounded-lg"><X className="w-5 h-5 text-text-muted" /></button>
+        </div>
+        {saved ? (
+          <div className="flex items-center gap-2 text-success py-4"><CheckCircle2 className="w-5 h-5" /><span className="font-semibold">Technicien créé !</span></div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1">Prénom</label>
+                <input value={prenom} onChange={e => setPrenom(e.target.value)} required className="input-base" placeholder="Prénom" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1">Nom</label>
+                <input value={nom} onChange={e => setNom(e.target.value)} required className="input-base" placeholder="Nom" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1">Email</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="input-base" placeholder="prenom.nom@exemple.com" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1">Entreprise</label>
+              <select value={entreprise} onChange={e => setEntreprise(e.target.value)} className="input-base">
+                {mockEntreprises.map(e => <option key={e.id} value={e.nom}>{e.nom}</option>)}
+              </select>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-text-muted">Mot de passe</label>
+                <button type="button" onClick={() => setPassword(generatePassword())} className="text-xs text-primary flex items-center gap-1 hover:underline">
+                  <RefreshCw className="w-3 h-3" /> Générer
+                </button>
+              </div>
+              <div className="relative">
+                <input type={showPwd ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required className="input-base pr-10" />
+                <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted">
+                  {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <button type="button" onClick={onClose} className="flex-1 btn-secondary">Annuler</button>
+              <button type="submit" className="flex-1 btn-primary">Créer</button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminTechniciensPage() {
   const [techs, setTechs] = useState<Tech[]>(
     mockAllTechniciens.map(t => ({ ...t, password: 'password123' }))
   );
   const [editTech, setEditTech] = useState<Tech | null>(null);
   const [credTech, setCredTech] = useState<Tech | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
 
   const handleSave = (data: Partial<Tech>) => {
     if (!editTech) return;
     setTechs(prev => prev.map(t => t.id === editTech.id ? { ...t, ...data } : t));
+  };
+
+  const handleAdd = (data: Omit<Tech, 'id' | 'statut' | 'missions' | 'derniereActivite'>) => {
+    setTechs(prev => [...prev, {
+      id: `tech_${Date.now()}`,
+      statut: 'actif' as const,
+      missions: 0,
+      derniereActivite: 'Jamais',
+      ...data,
+    }]);
   };
 
   const handleResetPassword = (id: string, pwd: string) => {
@@ -166,9 +253,14 @@ export default function AdminTechniciensPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="section-title">Tous les techniciens</h2>
-        <p className="text-sm text-text-muted mt-1">{techs.length} technicien{techs.length > 1 ? 's' : ''} sur la plateforme</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="section-title">Tous les techniciens</h2>
+          <p className="text-sm text-text-muted mt-1">{techs.length} technicien{techs.length > 1 ? 's' : ''} sur la plateforme</p>
+        </div>
+        <button onClick={() => setShowAdd(true)} className="btn-primary flex items-center gap-2 text-sm shrink-0">
+          <Plus className="w-4 h-4" /> Ajouter
+        </button>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -239,12 +331,9 @@ export default function AdminTechniciensPage() {
         </div>
       </div>
 
-      {editTech && (
-        <EditModal tech={editTech} onClose={() => setEditTech(null)} onSave={handleSave} />
-      )}
-      {credTech && (
-        <CredentialsModal tech={credTech} onClose={() => setCredTech(null)} onResetPassword={handleResetPassword} />
-      )}
+      {showAdd && <AddTechModal onClose={() => setShowAdd(false)} onSave={handleAdd} />}
+      {editTech && <EditModal tech={editTech} onClose={() => setEditTech(null)} onSave={handleSave} />}
+      {credTech && <CredentialsModal tech={credTech} onClose={() => setCredTech(null)} onResetPassword={handleResetPassword} />}
     </div>
   );
 }
