@@ -32,10 +32,10 @@ export default function EntreprisePage() {
   const termine = mockMissions.filter(m => m.statut === StatutPassage.COMPLETE).length;
 
   const stats = [
-    { label: 'Piscines gérées', value: 12, icon: Droplets, color: 'text-primary', bg: 'bg-primary/10' },
-    { label: 'Techniciens actifs', value: 3, icon: Users, color: 'text-success', bg: 'bg-success/10' },
-    { label: 'Missions en cours', value: enCours, icon: TrendingUp, color: 'text-warning', bg: 'bg-warning/10' },
-    { label: 'Alertes ouvertes', value: 2, icon: AlertTriangle, color: 'text-danger', bg: 'bg-danger/10' },
+    { label: 'Piscines gérées', value: 12, icon: Droplets, color: 'text-primary', bg: 'bg-primary/10', href: '/piscines' },
+    { label: 'Techniciens actifs', value: 3, icon: Users, color: 'text-success', bg: 'bg-success/10', href: '/entreprise/techniciens' },
+    { label: 'Missions en cours', value: enCours, icon: TrendingUp, color: 'text-warning', bg: 'bg-warning/10', href: '/entreprise/interventions' },
+    { label: 'Alertes ouvertes', value: 2, icon: AlertTriangle, color: 'text-danger', bg: 'bg-danger/10', href: '/entreprise/interventions' },
   ];
 
   const quickLinks = [
@@ -60,7 +60,7 @@ export default function EntreprisePage() {
         {stats.map((s) => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="card flex items-center gap-3 !p-4">
+            <Link key={s.label} href={s.href} className="card flex items-center gap-3 !p-4 hover:border-primary/40 hover:shadow-sm transition-all">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${s.bg}`}>
                 <Icon className={`w-5 h-5 ${s.color}`} />
               </div>
@@ -68,7 +68,7 @@ export default function EntreprisePage() {
                 <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
                 <p className="text-xs text-text-muted leading-tight">{s.label}</p>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
